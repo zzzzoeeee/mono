@@ -1,5 +1,5 @@
 {
-	"name": "kitchen-sink",
+	"name": "mono",
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
@@ -17,8 +17,5 @@
 	"packageManager": "pnpm@8.15.6",
 	"engines": {
 		"node": ">=18"
-	},
-	"dependencies": {
-		"@repo/typescript-config": "workspace:^"
 	}
 }
