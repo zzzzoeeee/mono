@@ -1,27 +1,45 @@
-import "./styles.css";
-import { CounterButton } from "@repo/ui/counter-button";
-import { Link } from "@repo/ui/link";
+import { c } from '@repo/contracts';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { initTsrReactQuery } from '@ts-rest/react-query/v5';
 
-function App() {
+const queryClient = new QueryClient();
+
+export const tsr = initTsrReactQuery(c, {
+	baseUrl: import.meta.env.VITE_API_BASE_URL,
+	baseHeaders: {
+		'x-app-source': 'ts-rest',
+	},
+});
+
+export default function App() {
 	return (
-		<div className="container">
-			<h1 className="title">
-				Admin <br />
-				<span>Kitchen Sink</span>
-			</h1>
-			<CounterButton />
-			<p className="description">
-				Built With{" "}
-				<Link href="https://turborepo.com" newTab>
-					Turborepo
-				</Link>
-				{" & "}
-				<Link href="https://vitejs.dev/" newTab>
-					Vite
-				</Link>
-			</p>
-		</div>
+		<QueryClientProvider client={queryClient}>
+			<tsr.ReactQueryProvider>
+				<div style={{ padding: '1rem' }}>
+					<Example />
+				</div>
+			</tsr.ReactQueryProvider>
+		</QueryClientProvider>
 	);
 }
 
-export default App;
+function Example() {
+	const { data, isPending, error } = tsr.restaurants.getAllRestaurants.useQuery(
+		{
+			queryKey: ['restaurants'],
+		},
+	);
+
+	if (isPending) return 'Loading...';
+
+	if (error) return `An error has occurred: ${error}`;
+
+	return (
+		<div>
+			<h1>{data.body[0].name}</h1>
+			<pre style={{ border: '1px solid #ccc', padding: '1rem' }}>
+				{JSON.stringify(data, null, 2)}
+			</pre>
+		</div>
+	);
+}
