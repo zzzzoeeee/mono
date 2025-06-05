@@ -1,7 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
-import { getPaginationQuery } from '../shared/queries';
+import { basePaginationQuery } from '../shared/queries';
 
 extendZodWithOpenApi(z);
 
@@ -38,9 +38,6 @@ export const pricePlanContract = c.router(
 			path: '/:id',
 			responses: {
 				200: PricePlanSchema,
-				404: z.object({
-					message: z.string(),
-				}),
 			},
 			body: z.object({
 				name: z.string(),
@@ -55,7 +52,9 @@ export const pricePlanContract = c.router(
 			responses: {
 				200: z.array(PricePlanSchema),
 			},
-			query: getPaginationQuery({ sort: ['name', 'createdAt', 'updatedAt'] }),
+			query: basePaginationQuery.extend({
+				sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+			}),
 			summary: 'Get price plans for a restaurant',
 		},
 		deletePricePlan: {
@@ -63,9 +62,6 @@ export const pricePlanContract = c.router(
 			path: '/:id',
 			responses: {
 				200: z.object({
-					message: z.string(),
-				}),
-				404: z.object({
 					message: z.string(),
 				}),
 			},

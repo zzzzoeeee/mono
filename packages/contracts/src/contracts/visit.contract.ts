@@ -1,7 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
-import { getPaginationQuery } from '../shared/queries';
+import { basePaginationQuery } from '../shared/queries';
 
 extendZodWithOpenApi(z);
 
@@ -46,9 +46,6 @@ export const visitContract = c.router(
 			path: '/:id',
 			responses: {
 				200: VisitSchema,
-				404: z.object({
-					message: z.string(),
-				}),
 			},
 			body: z.object({
 				tableId: z.string(),
@@ -67,22 +64,20 @@ export const visitContract = c.router(
 				200: z.object({
 					message: z.string(),
 				}),
-				404: z.object({
-					message: z.string(),
-				}),
 			},
 			summary: 'Delete a visit by id',
 		},
 		getAllVisits: {
 			method: 'GET',
 			path: '',
-			query: getPaginationQuery({ sort: ['createdAt', 'updatedAt'] }).extend({
+			query: basePaginationQuery.extend({
 				tableId: z.string().optional(),
 				pricePlanId: z.string().optional(),
 				customerCount: z.number().optional(),
 				status: VisitStatus.optional(),
 				startTime: z.date().optional(),
 				endTime: z.date().optional(),
+				sort: z.enum(['createdAt', 'updatedAt']).optional(),
 			}),
 			responses: {
 				200: z.array(VisitSchema),
@@ -94,9 +89,6 @@ export const visitContract = c.router(
 			path: '/:id',
 			responses: {
 				200: VisitSchema,
-				404: z.object({
-					message: z.string(),
-				}),
 			},
 			summary: 'Get a visit by id',
 		},

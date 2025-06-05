@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MenuCategory {
+  APPETIZER
+  MAIN
+  DESSERT
+  BEVERAGE
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+}
+
+enum VisitStatus {
+  USING
+  FINISHED
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  COMPLETED
+  CANCELLED
+}
+
+model Restaurant {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  phone     String?
+  website   String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  menus      Menu[]
+  tables     Table[]
+  pricePlans PricePlan[]
+}
+
+model Menu {
+  id           String       @id @default(uuid())
+  restaurantId String
+  name         String
+  description  String?
+  price        Float
+  category     MenuCategory
+  isAvailable  Boolean      @default(true)
+  image        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id])
+  orderItems OrderItem[]
+}
+
+model Table {
+  id           String      @id @default(uuid())
+  restaurantId String
+  name         String
+  capacity     Int
+  status       TableStatus @default(AVAILABLE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relations
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  visits     Visit[]
+}
+
+model PricePlan {
+  id           String   @id @default(uuid())
+  restaurantId String
+  name         String
+  description  String?
+  price        Float
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  visits     Visit[]
+}
+
+model Visit {
+  id            String      @id @default(uuid())
+  tableId       String
+  pricePlanId   String
+  customerCount Int
+  status        VisitStatus @default(USING)
+  startTime     DateTime
+  endTime       DateTime?
+  duration      Int?
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  table     Table     @relation(fields: [tableId], references: [id])
+  pricePlan PricePlan @relation(fields: [pricePlanId], references: [id])
+  orders    Order[]
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  visitId   String
+  status    OrderStatus @default(PENDING)
+  notes     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  visit Visit       @relation(fields: [visitId], references: [id])
+  items OrderItem[]
+}
+
+model OrderItem {
+  id       String  @id @default(uuid())
+  orderId  String
+  menuId   String
+  quantity Int     @default(1)
+  price    Float
+  notes    String?
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menu  Menu  @relation(fields: [menuId], references: [id])
+
+  @@index([orderId])
+  @@index([menuId])
+}

@@ -1,7 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
-import { getPaginationQuery } from '../shared/queries';
+import { basePaginationQuery } from '../shared/queries';
 
 extendZodWithOpenApi(z);
 
@@ -11,9 +11,9 @@ const RestaurantsSchema = z.object({
 	id: z.string(),
 	name: z.string(),
 	address: z.string(),
-	phone: z.string().optional(),
-	website: z.string().optional(),
-	image: z.string().optional(),
+	phone: z.string().nullable().optional(),
+	website: z.string().nullable().optional(),
+	image: z.string().nullable().optional(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });
@@ -39,9 +39,6 @@ export const restaurantContract = c.router({
 		path: '/restaurants/:id',
 		responses: {
 			200: RestaurantsSchema,
-			404: z.object({
-				message: z.string(),
-			}),
 		},
 		body: z.object({
 			name: z.string(),
@@ -59,16 +56,15 @@ export const restaurantContract = c.router({
 			200: z.object({
 				message: z.string(),
 			}),
-			404: z.object({
-				message: z.string(),
-			}),
 		},
 		summary: 'Delete a restaurant by id',
 	},
 	getAllRestaurants: {
 		method: 'GET',
 		path: '/restaurants',
-		query: getPaginationQuery({ sort: ['name', 'createdAt', 'updatedAt'] }),
+		query: basePaginationQuery.extend({
+			sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+		}),
 		responses: {
 			200: z.array(RestaurantsSchema),
 		},
@@ -79,9 +75,6 @@ export const restaurantContract = c.router({
 		path: '/restaurants/:id',
 		responses: {
 			200: RestaurantsSchema,
-			404: z.object({
-				message: z.string(),
-			}),
 		},
 		summary: 'Get a restaurant by id',
 	},
