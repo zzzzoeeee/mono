@@ -7,13 +7,14 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const MenuCategorySchema = z.enum(['appetizer', 'main', 'dessert', 'beverage']);
+const MenuCategorySchema = z.enum(['APPETIZER', 'MAIN', 'DESSERT', 'BEVERAGE']);
 
 const MenuSchema = z.object({
 	id: z.string(),
 	restaurantId: z.string(),
 	name: z.string(),
-	description: z.string().optional(),
+	description: z.string().nullable(),
+	image: z.string().nullable(),
 	price: z.number(),
 	category: MenuCategorySchema,
 	isAvailable: z.boolean(),
@@ -30,9 +31,9 @@ export const menuContract = c.router(
 				201: MenuSchema,
 			},
 			body: z.object({
-				restaurantId: z.string(),
 				name: z.string(),
-				description: z.string().optional(),
+				description: z.string().nullable(),
+				image: z.string().nullable(),
 				price: z.number(),
 				category: MenuCategorySchema,
 				isAvailable: z.boolean().default(true),
@@ -47,7 +48,8 @@ export const menuContract = c.router(
 			},
 			body: z.object({
 				name: z.string(),
-				description: z.string().optional(),
+				description: z.string().nullable(),
+				image: z.string().nullable(),
 				price: z.number(),
 				category: MenuCategorySchema,
 				isAvailable: z.boolean(),

@@ -11,7 +11,7 @@ const PricePlanSchema = z.object({
 	id: z.string(),
 	restaurantId: z.string(),
 	name: z.string(),
-	description: z.string().optional(),
+	description: z.string().nullable(),
 	price: z.number(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
@@ -28,7 +28,7 @@ export const pricePlanContract = c.router(
 			body: z.object({
 				restaurantId: z.string(),
 				name: z.string(),
-				description: z.string().optional(),
+				description: z.string().nullable(),
 				price: z.number(),
 			}),
 			summary: 'Create a new price plan',
@@ -41,7 +41,7 @@ export const pricePlanContract = c.router(
 			},
 			body: z.object({
 				name: z.string(),
-				description: z.string().optional(),
+				description: z.string().nullable(),
 				price: z.number(),
 			}),
 			summary: 'Update a price plan',

@@ -7,7 +7,7 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const VisitStatus = z.enum(['using', 'finished']);
+const VisitStatus = z.enum(['USING', 'FINISHED']);
 
 const VisitSchema = z.object({
 	id: z.string(),
@@ -17,10 +17,10 @@ const VisitSchema = z.object({
 	createdAt: z.date(),
 	updatedAt: z.date(),
 	startTime: z.date(),
-	endTime: z.date().optional(),
-	duration: z.number().optional().describe('Duration in minutes'),
+	endTime: z.date().nullable(),
+	duration: z.number().nullable().describe('Duration in minutes'),
 	status: VisitStatus,
-	notes: z.string().optional(),
+	notes: z.string().nullable(),
 });
 
 export const visitContract = c.router(
@@ -34,10 +34,10 @@ export const visitContract = c.router(
 			body: z.object({
 				tableId: z.string(),
 				startTime: z.date(),
-				endTime: z.date().optional(),
-				duration: z.number().optional().describe('Duration in minutes'),
+				endTime: z.date().nullable(),
+				duration: z.number().nullable().describe('Duration in minutes'),
 				status: VisitStatus,
-				notes: z.string().optional(),
+				notes: z.string().nullable(),
 			}),
 			summary: 'Create a visit',
 		},
@@ -50,10 +50,10 @@ export const visitContract = c.router(
 			body: z.object({
 				tableId: z.string(),
 				startTime: z.date(),
-				endTime: z.date().optional(),
-				duration: z.number().optional().describe('Duration in minutes'),
+				endTime: z.date().nullable(),
+				duration: z.number().nullable().describe('Duration in minutes'),
 				status: VisitStatus,
-				notes: z.string().optional(),
+				notes: z.string().nullable(),
 			}),
 			summary: 'Update a visit by id',
 		},

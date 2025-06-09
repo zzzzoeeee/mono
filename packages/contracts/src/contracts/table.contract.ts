@@ -7,7 +7,7 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const TableStatus = z.enum(['available', 'occupied']);
+const TableStatus = z.enum(['AVAILABLE', 'OCCUPIED']);
 
 const TablesSchema = z.object({
 	id: z.string(),

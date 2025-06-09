@@ -7,18 +7,22 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const OrderStatus = z.enum(['pending', 'preparing', 'completed', 'cancelled']);
+const OrderStatus = z.enum(['PENDING', 'PREPARING', 'COMPLETED', 'CANCELLED']);
 
 const OrderSchema = z.object({
 	id: z.string(),
-	tableUsageId: z.string(),
+	visitId: z.string(),
+	notes: z.string().nullable(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 	status: OrderStatus,
 	items: z.array(
 		z.object({
+			id: z.string(),
 			menuId: z.string(),
 			quantity: z.number(),
+			price: z.number(),
+			notes: z.string().nullable(),
 		}),
 	),
 });
@@ -32,11 +36,13 @@ export const orderContract = c.router(
 				201: OrderSchema,
 			},
 			body: z.object({
-				tableUsageId: z.string(),
+				visitId: z.string(),
+				notes: z.string().nullable(),
 				items: z.array(
 					z.object({
 						menuId: z.string(),
-						quantity: z.number().optional().default(1),
+						quantity: z.number().default(1),
+						notes: z.string().nullable(),
 					}),
 				),
 			}),
@@ -49,11 +55,14 @@ export const orderContract = c.router(
 				200: OrderSchema,
 			},
 			body: z.object({
-				tableUsageId: z.string(),
+				visitId: z.string(),
+				notes: z.string().nullable(),
+				status: OrderStatus,
 				items: z.array(
 					z.object({
 						menuId: z.string(),
-						quantity: z.number().optional().default(1),
+						quantity: z.number().default(1),
+						notes: z.string().nullable(),
 					}),
 				),
 			}),
@@ -73,7 +82,7 @@ export const orderContract = c.router(
 			method: 'GET',
 			path: '',
 			query: basePaginationQuery.extend({
-				tableUsageId: z.string().optional(),
+				visitId: z.string().optional(),
 				status: OrderStatus.optional(),
 				sort: z.enum(['createdAt', 'updatedAt']).optional(),
 			}),
@@ -93,5 +102,6 @@ export const orderContract = c.router(
 	},
 	{
 		pathPrefix: '/restaurants/:restaurantId/orders',
+		meta: OrderSchema,
 	},
 );
