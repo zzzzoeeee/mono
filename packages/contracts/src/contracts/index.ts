@@ -7,6 +7,8 @@ import { visitContract } from './visit.contract';
 import { pricePlanContract } from './price-plan.contract';
 import { menuContract } from './menu.contract';
 import { orderContract } from './order.contract';
+import { authContract } from './auth.contract';
+import { userContract } from './user.contract';
 
 extendZodWithOpenApi(z);
 
@@ -20,6 +22,8 @@ export const c = contract.router(
 		tables: tableContract,
 		visits: visitContract,
 		orders: orderContract,
+		auth: authContract,
+		users: userContract,
 	},
 	{
 		commonResponses: {

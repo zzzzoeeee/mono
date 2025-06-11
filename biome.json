@@ -27,5 +27,15 @@
 		"formatter": {
 			"quoteStyle": "single"
 		}
-	}
+	},
+	"overrides": [
+		{
+			"include": ["apps/api/**"],
+			"javascript": {
+				"parser": {
+					"unsafeParameterDecoratorsEnabled": true
+				}
+			}
+		}
+	]
 }

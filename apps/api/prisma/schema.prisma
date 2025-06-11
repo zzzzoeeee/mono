@@ -35,6 +35,11 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum UserRole {
+  ADMIN
+  STAFF
+}
+
 model Restaurant {
   id        String   @id @default(uuid())
   name      String
@@ -143,4 +148,15 @@ model OrderItem {
 
   @@index([orderId])
   @@index([menuId])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  role      UserRole @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
