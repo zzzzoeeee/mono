@@ -2,8 +2,13 @@ import { Controller } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
 import { RestaurantService } from '../services/restaurant.service';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../../auth/guards';
+import { Roles } from '../../auth/decorators';
 
 @Controller()
+@UseGuards(RolesGuard)
+@Roles('SUPER_ADMIN')
 export class RestaurantController {
 	constructor(private readonly restaurantService: RestaurantService) {}
 
@@ -20,7 +25,7 @@ export class RestaurantController {
 
 	@TsRestHandler(c.restaurants.getAllRestaurants)
 	async getAllRestaurants() {
-		return tsRestHandler(c.restaurants.getAllRestaurants, async ({query}) => {
+		return tsRestHandler(c.restaurants.getAllRestaurants, async ({ query }) => {
 			const restaurants = await this.restaurantService.getAllRestaurants(query);
 			return {
 				status: 200,
