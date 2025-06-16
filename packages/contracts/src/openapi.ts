@@ -2,6 +2,7 @@ import { c } from './contracts';
 import { generateOpenApi } from '@ts-rest/open-api';
 import express from 'express';
 import * as swaggerUi from 'swagger-ui-express';
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 const app = express();
 const port = 3100;
@@ -19,7 +20,15 @@ const openApiDocument = generateOpenApi(c, {
 	],
 });
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+const theme = new SwaggerTheme();
+
+app.use(
+	'/',
+	swaggerUi.serve,
+	swaggerUi.setup(openApiDocument, {
+		customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK_MONOKAI),
+	}),
+);
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
