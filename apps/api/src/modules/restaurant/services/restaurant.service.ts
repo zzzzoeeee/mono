@@ -1,27 +1,23 @@
-import {
-	Injectable,
-	InternalServerErrorException,
-	NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Restaurant } from '@prisma-client';
 import { RestaurantRepository } from '../repositories/restaurant.repository';
 import { c } from '@repo/contracts';
-import z from 'zod';
 import { TsRestException } from '@ts-rest/nest';
+import {
+	CreateRestaurantInput,
+	GetRestaurantsQuery,
+	UpdateRestaurantInput,
+} from '../types';
 
 @Injectable()
 export class RestaurantService {
 	constructor(private readonly restaurantRepository: RestaurantRepository) {}
 
-	async createRestaurant(
-		data: Omit<Restaurant, 'id' | 'createdAt' | 'updatedAt'>,
-	): Promise<Restaurant> {
+	async createRestaurant(data: CreateRestaurantInput): Promise<Restaurant> {
 		return this.restaurantRepository.create(data);
 	}
 
-	async getAllRestaurants(
-		query: z.infer<typeof c.restaurants.getAllRestaurants.query>,
-	): Promise<Restaurant[]> {
+	async getAllRestaurants(query: GetRestaurantsQuery): Promise<Restaurant[]> {
 		return this.restaurantRepository.findAll(query);
 	}
 
@@ -40,7 +36,7 @@ export class RestaurantService {
 
 	async updateRestaurant(
 		id: string,
-		data: Partial<Omit<Restaurant, 'id' | 'createdAt' | 'updatedAt'>>,
+		data: UpdateRestaurantInput,
 	): Promise<Restaurant> {
 		await this.getRestaurant(id);
 		return this.restaurantRepository.update(id, data);

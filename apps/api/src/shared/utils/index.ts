@@ -1,1 +1,1 @@
-export * from './parse-zod-object-query.util';
+export * from './parse-pagination-query.util';

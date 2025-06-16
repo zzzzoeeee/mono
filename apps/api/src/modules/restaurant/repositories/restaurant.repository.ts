@@ -1,27 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Restaurant } from '@prisma-client';
 import { PrismaService } from 'shared/modules/prisma/prisma.service';
-import { c } from '@repo/contracts';
-import z from 'zod';
 import { insensitiveContainSearchQuery } from 'shared/queries/insensitive-contain-search.query';
-import { parseZodObjectQuery } from 'shared/utils';
+import { parsePaginationQuery } from 'shared/utils';
+import {
+	CreateRestaurantInput,
+	GetRestaurantsQuery,
+	UpdateRestaurantInput,
+} from '../types';
 
 @Injectable()
 export class RestaurantRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async create(
-		data: Omit<Restaurant, 'id' | 'createdAt' | 'updatedAt'>,
-	): Promise<Restaurant> {
+	async create(data: CreateRestaurantInput): Promise<Restaurant> {
 		return this.prisma.restaurant.create({
 			data,
 		});
 	}
 
-	async findAll(
-		rawQuery: z.infer<typeof c.restaurants.getAllRestaurants.query>,
-	): Promise<Restaurant[]> {
-		const query = parseZodObjectQuery(rawQuery);
+	async findAll(rawQuery: GetRestaurantsQuery): Promise<Restaurant[]> {
+		const query = parsePaginationQuery(rawQuery);
 
 		const orderByOptions: Record<
 			NonNullable<typeof query.sort>,
@@ -61,10 +60,7 @@ export class RestaurantRepository {
 		});
 	}
 
-	async update(
-		id: string,
-		data: Partial<Omit<Restaurant, 'id' | 'createdAt' | 'updatedAt'>>,
-	): Promise<Restaurant> {
+	async update(id: string, data: UpdateRestaurantInput): Promise<Restaurant> {
 		return this.prisma.restaurant.update({
 			where: { id },
 			data,

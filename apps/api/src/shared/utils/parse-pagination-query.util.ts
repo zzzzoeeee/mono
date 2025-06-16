@@ -1,12 +1,12 @@
 type basePagination = {
-	page: number;
-	limit: number;
-	order: 'asc' | 'desc';
+	page?: number;
+	limit?: number;
+	order?: 'asc' | 'desc';
 	sort?: 'name' | 'createdAt' | 'updatedAt' | undefined;
 	search?: string | undefined;
 };
 
-export const parseZodObjectQuery = <T extends basePagination>(query: T) => {
+export const parsePaginationQuery = <T extends basePagination>(query: T) => {
 	const page = query.page || 1;
 	const limit = query.limit || 10;
 	const skip = (page - 1) * limit;
