@@ -14,6 +14,55 @@ extendZodWithOpenApi(z);
 
 const contract = initContract();
 
+export const commonResponses = {
+	400: z.object(
+		{
+			statusCode: z.number().default(400),
+			message: z.string().default('Bad Request'),
+			detail: z.string().or(z.object({})).nullable().default(null),
+		},
+		{
+			description: 'Bad Request',
+		},
+	),
+	404: z.object(
+		{
+			statusCode: z.number().default(404),
+			message: z.string().default('Not Found'),
+		},
+		{
+			description: 'Not Found',
+		},
+	),
+	409: z.object(
+		{
+			statusCode: z.number().default(409),
+			message: z.string().default('Conflict'),
+		},
+		{
+			description: 'Conflict',
+		},
+	),
+	422: z.object(
+		{
+			statusCode: z.number().default(422),
+			message: z.string().default('Unprocessable Entity'),
+		},
+		{
+			description: 'Unprocessable Entity',
+		},
+	),
+	500: z.object(
+		{
+			statusCode: z.number().default(500),
+			message: z.string().default('Internal Server Error'),
+		},
+		{
+			description: 'Internal Server Error',
+		},
+	),
+};
+
 export const c = contract.router(
 	{
 		restaurants: restaurantContract,
@@ -26,52 +75,6 @@ export const c = contract.router(
 		users: userContract,
 	},
 	{
-		commonResponses: {
-			400: z.object(
-				{
-					statusCode: z.number().default(400),
-					message: z.string().default('Bad Request'),
-				},
-				{
-					description: 'Bad Request',
-				},
-			),
-			404: z.object(
-				{
-					statusCode: z.number().default(404),
-					message: z.string().default('Not Found'),
-				},
-				{
-					description: 'Not Found',
-				},
-			),
-			409: z.object(
-				{
-					statusCode: z.number().default(409),
-					message: z.string().default('Conflict'),
-				},
-				{
-					description: 'Conflict',
-				},
-			),
-			422: z.object(
-				{
-					statusCode: z.number().default(422),
-					message: z.string().default('Unprocessable Entity'),
-				},
-				{
-					description: 'Unprocessable Entity',
-				},
-			),
-			500: z.object(
-				{
-					statusCode: z.number().default(500),
-					message: z.string().default('Internal Server Error'),
-				},
-				{
-					description: 'Internal Server Error',
-				},
-			),
-		},
+		commonResponses,
 	},
 );

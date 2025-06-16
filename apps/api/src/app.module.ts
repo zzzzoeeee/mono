@@ -6,6 +6,7 @@ import { PrismaModule } from './shared/modules/prisma/prisma.module';
 import { APP_FILTER } from '@nestjs/core';
 import { PrismaClientExceptionFilter } from './shared/filters';
 import { AuthModule } from './modules/auth/auth.module';
+import { RequestValidationErrorFilter } from './shared/filters';
 
 @Module({
 	imports: [PrismaModule, AuthModule, RestaurantModule],
@@ -14,6 +15,10 @@ import { AuthModule } from './modules/auth/auth.module';
 		{
 			provide: APP_FILTER,
 			useClass: PrismaClientExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: RequestValidationErrorFilter,
 		},
 		AppService,
 	],
