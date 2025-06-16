@@ -18,16 +18,23 @@ export class AuthService {
 		return this.userService.create({
 			...user,
 			hashedPassword,
-		}); 
+		});
 	}
 
 	async validateUser(email: string, password: string): Promise<User | null> {
 		const user = await this.userService.findByEmail(email, true);
-		if (user && (await argon2.verify(user.password, password))) {
-			return user;
+		if (!user) {
+			return null;
 		}
 
-		return null;
+		const { password: hashedPassword, ...rest } = user;
+		const isValidPassword = await argon2.verify(hashedPassword, password);
+
+		if (!isValidPassword) {
+			return null;
+		}
+
+		return rest;
 	}
 
 	async login(user: LoginInput) {
