@@ -2,13 +2,15 @@ import { Controller, Req, UseGuards } from '@nestjs/common';
 import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
 import { AuthService } from '../services';
-import { LocalAuthGuard } from '../guards';
+import { LoginAuthGuard } from '../guards';
 import { ReqWithUser } from 'shared/types';
+import { Public } from '../decorators';
 
 @Controller()
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
+	@Public()
 	@TsRestHandler(c.auth.register)
 	async register() {
 		return tsRestHandler(c.auth.register, async ({ body }) => {
@@ -20,7 +22,8 @@ export class AuthController {
 		});
 	}
 
-	@UseGuards(LocalAuthGuard)
+	@UseGuards(LoginAuthGuard)
+	@Public()
 	@TsRestHandler(c.auth.login)
 	async login(@Req() req: ReqWithUser) {
 		return tsRestHandler(c.auth.login, async () => {
