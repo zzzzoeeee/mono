@@ -2,7 +2,7 @@ import { Controller, Req, UseGuards } from '@nestjs/common';
 import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
 import { AuthService } from '../services';
-import { LoginAuthGuard } from '../guards';
+import { AuthenticatedGuard, LoginAuthGuard } from '../guards';
 import { ReqWithUser } from 'shared/types';
 import { Public } from '../decorators';
 
@@ -42,6 +42,25 @@ export class AuthController {
 					user: req.user,
 				},
 			};
+		});
+	}
+
+	@UseGuards(AuthenticatedGuard)
+	@TsRestHandler(c.auth.logout)
+	async logout(@Req() req: ReqWithUser) {
+		return tsRestHandler(c.auth.logout, async () => {
+			return new Promise((resolve, reject) => {
+				req.logout((err) => {
+					if (err) {
+						return reject(err);
+					}
+
+					resolve({
+						status: 204,
+						body: {},
+					});
+				});
+			});
 		});
 	}
 }
