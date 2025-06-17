@@ -8,6 +8,7 @@ import {
 	GetRestaurantsQuery,
 	UpdateRestaurantInput,
 } from '../types';
+import { UserRole } from '../../user/types';
 
 @Injectable()
 export class RestaurantService {
@@ -21,7 +22,23 @@ export class RestaurantService {
 		return this.restaurantRepository.findAll(query);
 	}
 
-	async getRestaurant(id: string): Promise<Restaurant> {
+	async getRestaurant(
+		id: string,
+		userId?: string,
+		userRole?: UserRole,
+	): Promise<Restaurant> {
+		if (userRole === 'ADMIN' && userId) {
+			const hasAccess = await this.checkUserBelongsToRestaurant(userId, id);
+			if (!hasAccess) {
+				throw new TsRestException(c.restaurants.getRestaurant, {
+					body: {
+						message: 'Access denied to this restaurant',
+					},
+					status: 403,
+				});
+			}
+		}
+
 		const restaurant = await this.restaurantRepository.findOne(id);
 		if (!restaurant) {
 			throw new TsRestException(c.restaurants.getRestaurant, {
@@ -37,7 +54,21 @@ export class RestaurantService {
 	async updateRestaurant(
 		id: string,
 		data: UpdateRestaurantInput,
+		userId: string,
+		userRole: UserRole,
 	): Promise<Restaurant> {
+		if (userRole === 'ADMIN' && userId) {
+			const hasAccess = await this.checkUserBelongsToRestaurant(userId, id);
+			if (!hasAccess) {
+				throw new TsRestException(c.restaurants.updateRestaurant, {
+					body: {
+						message: 'Access denied to this restaurant',
+					},
+					status: 403,
+				});
+			}
+		}
+
 		await this.getRestaurant(id);
 		return this.restaurantRepository.update(id, data);
 	}
@@ -45,5 +76,15 @@ export class RestaurantService {
 	async deleteRestaurant(id: string): Promise<void> {
 		await this.getRestaurant(id);
 		await this.restaurantRepository.remove(id);
+	}
+
+	async checkUserBelongsToRestaurant(
+		userId: string,
+		restaurantId: string,
+	): Promise<boolean> {
+		return this.restaurantRepository.checkUserBelongsToRestaurant(
+			userId,
+			restaurantId,
+		);
 	}
 }

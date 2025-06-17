@@ -72,4 +72,14 @@ export class RestaurantRepository {
 			where: { id },
 		});
 	}
+
+	async checkUserBelongsToRestaurant(userId: string, restaurantId: string): Promise<boolean> {
+		const restaurantUser = await this.prisma.restaurantUser.findFirst({
+			where: {
+				userId,
+				restaurantId,
+			},
+		});
+		return !!restaurantUser;
+	}
 }

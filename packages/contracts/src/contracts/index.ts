@@ -25,6 +25,24 @@ export const commonResponses = {
 			description: 'Bad Request',
 		},
 	),
+	401: z.object(
+		{
+			statusCode: z.number().default(401),
+			message: z.string().default('Unauthorized'),
+		},
+		{
+			description: 'Unauthorized',
+		},
+	),
+	403: z.object(
+		{
+			statusCode: z.number().default(403),
+			message: z.string().default('Forbidden'),
+		},
+		{
+			description: 'Forbidden',
+		},
+	),
 	404: z.object(
 		{
 			statusCode: z.number().default(404),

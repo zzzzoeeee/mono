@@ -1,21 +1,36 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
 import { RestaurantService } from '../services/restaurant.service';
 import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../../auth/guards';
 import { Roles } from '../../auth/decorators';
+import { ReqWithUser } from 'shared/types';
+import { TsRestException } from '@ts-rest/nest';
 
 @Controller()
 @UseGuards(RolesGuard)
-@Roles('SUPER_ADMIN')
 export class RestaurantController {
 	constructor(private readonly restaurantService: RestaurantService) {}
 
 	@TsRestHandler(c.restaurants.getRestaurant)
-	async getRestaurant() {
+	@Roles('SUPER_ADMIN', 'ADMIN')
+	async getRestaurant(@Req() req: ReqWithUser) {
 		return tsRestHandler(c.restaurants.getRestaurant, async ({ params }) => {
-			const restaurant = await this.restaurantService.getRestaurant(params.id);
+			if (!req.user) {
+				throw new TsRestException(c.restaurants.getRestaurant, {
+					body: {
+						message: 'Unauthorized',
+					},
+					status: 401,
+				});
+			}
+
+			const restaurant = await this.restaurantService.getRestaurant(
+				params.id,
+				req.user.id,
+				req.user.role,
+			);
 			return {
 				status: 200,
 				body: restaurant,
@@ -24,6 +39,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.getAllRestaurants)
+	@Roles('SUPER_ADMIN')
 	async getAllRestaurants() {
 		return tsRestHandler(c.restaurants.getAllRestaurants, async ({ query }) => {
 			const restaurants = await this.restaurantService.getAllRestaurants(query);
@@ -35,6 +51,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.createRestaurant)
+	@Roles('SUPER_ADMIN')
 	async createRestaurant() {
 		return tsRestHandler(c.restaurants.createRestaurant, async ({ body }) => {
 			const restaurant = await this.restaurantService.createRestaurant({
@@ -51,13 +68,25 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.updateRestaurant)
-	async updateRestaurant() {
+	@Roles('SUPER_ADMIN', 'ADMIN')
+	async updateRestaurant(@Req() req: ReqWithUser) {
 		return tsRestHandler(
 			c.restaurants.updateRestaurant,
 			async ({ params, body }) => {
+				if (!req.user) {
+					throw new TsRestException(c.restaurants.updateRestaurant, {
+						body: {
+							message: 'Unauthorized',
+						},
+						status: 401,
+					});
+				}
+
 				const restaurant = await this.restaurantService.updateRestaurant(
 					params.id,
 					body,
+					req.user.id,
+					req.user.role,
 				);
 				return {
 					status: 200,
@@ -68,6 +97,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.deleteRestaurant)
+	@Roles('SUPER_ADMIN')
 	async deleteRestaurant() {
 		return tsRestHandler(c.restaurants.deleteRestaurant, async ({ params }) => {
 			await this.restaurantService.deleteRestaurant(params.id);
