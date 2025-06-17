@@ -7,7 +7,7 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const RestaurantsSchema = z.object({
+const RestaurantSchema = z.object({
 	id: z.string(),
 	name: z.string(),
 	address: z.string(),
@@ -23,7 +23,7 @@ export const restaurantContract = c.router({
 		method: 'POST',
 		path: '/restaurants',
 		responses: {
-			201: RestaurantsSchema,
+			201: RestaurantSchema,
 		},
 		body: z.object({
 			name: z.string(),
@@ -38,7 +38,7 @@ export const restaurantContract = c.router({
 		method: 'PUT',
 		path: '/restaurants/:id',
 		responses: {
-			200: RestaurantsSchema,
+			200: RestaurantSchema,
 		},
 		body: z.object({
 			name: z.string(),
@@ -66,7 +66,7 @@ export const restaurantContract = c.router({
 			sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
 		}),
 		responses: {
-			200: z.array(RestaurantsSchema),
+			200: z.array(RestaurantSchema),
 		},
 		summary: 'Get all restaurants',
 	},
@@ -74,7 +74,7 @@ export const restaurantContract = c.router({
 		method: 'GET',
 		path: '/restaurants/:id',
 		responses: {
-			200: RestaurantsSchema,
+			200: RestaurantSchema,
 		},
 		summary: 'Get a restaurant by id',
 	},
