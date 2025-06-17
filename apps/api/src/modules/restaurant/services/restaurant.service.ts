@@ -22,15 +22,21 @@ export class RestaurantService {
 		return this.restaurantRepository.findAll(query);
 	}
 
-	async getRestaurant(
-		id: string,
-		userId?: string,
-		userRole?: UserRole,
-	): Promise<Restaurant> {
-		if (userRole === 'ADMIN' && userId) {
-			const hasAccess = await this.checkUserBelongsToRestaurant(userId, id);
+	private async validateRestaurantAccess(
+		restaurantId: string,
+		userId: string | undefined,
+		userRole: UserRole | undefined,
+		errorType:
+			| typeof c.restaurants.getRestaurant
+			| typeof c.restaurants.updateRestaurant,
+	): Promise<void> {
+		if (userRole === 'USER' && userId) {
+			const hasAccess = await this.checkUserAreRestaurantManager(
+				userId,
+				restaurantId,
+			);
 			if (!hasAccess) {
-				throw new TsRestException(c.restaurants.getRestaurant, {
+				throw new TsRestException(errorType, {
 					body: {
 						message: 'Access denied to this restaurant',
 					},
@@ -38,12 +44,25 @@ export class RestaurantService {
 				});
 			}
 		}
+	}
 
-		const restaurant = await this.restaurantRepository.findOne(id);
+	async getRestaurant(
+		restaurantId: string,
+		userId?: string,
+		userRole?: UserRole,
+	): Promise<Restaurant> {
+		await this.validateRestaurantAccess(
+			restaurantId,
+			userId,
+			userRole,
+			c.restaurants.getRestaurant,
+		);
+
+		const restaurant = await this.restaurantRepository.findOne(restaurantId);
 		if (!restaurant) {
 			throw new TsRestException(c.restaurants.getRestaurant, {
 				body: {
-					message: `Restaurant with ID ${id} not found`,
+					message: `Restaurant with ID ${restaurantId} not found`,
 				},
 				status: 404,
 			});
@@ -52,37 +71,31 @@ export class RestaurantService {
 	}
 
 	async updateRestaurant(
-		id: string,
+		restaurantId: string,
 		data: UpdateRestaurantInput,
 		userId: string,
 		userRole: UserRole,
 	): Promise<Restaurant> {
-		if (userRole === 'ADMIN' && userId) {
-			const hasAccess = await this.checkUserBelongsToRestaurant(userId, id);
-			if (!hasAccess) {
-				throw new TsRestException(c.restaurants.updateRestaurant, {
-					body: {
-						message: 'Access denied to this restaurant',
-					},
-					status: 403,
-				});
-			}
-		}
-
-		await this.getRestaurant(id);
-		return this.restaurantRepository.update(id, data);
+		await this.validateRestaurantAccess(
+			restaurantId,
+			userId,
+			userRole,
+			c.restaurants.updateRestaurant,
+		);
+		await this.getRestaurant(restaurantId);
+		return this.restaurantRepository.update(restaurantId, data);
 	}
 
-	async deleteRestaurant(id: string): Promise<void> {
-		await this.getRestaurant(id);
-		await this.restaurantRepository.remove(id);
+	async deleteRestaurant(restaurantId: string): Promise<void> {
+		await this.getRestaurant(restaurantId);
+		await this.restaurantRepository.remove(restaurantId);
 	}
 
-	async checkUserBelongsToRestaurant(
+	async checkUserAreRestaurantManager(
 		userId: string,
 		restaurantId: string,
 	): Promise<boolean> {
-		return this.restaurantRepository.checkUserBelongsToRestaurant(
+		return this.restaurantRepository.checkUserAreRestaurantManager(
 			userId,
 			restaurantId,
 		);

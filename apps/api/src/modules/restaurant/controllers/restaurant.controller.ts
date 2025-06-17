@@ -14,7 +14,7 @@ export class RestaurantController {
 	constructor(private readonly restaurantService: RestaurantService) {}
 
 	@TsRestHandler(c.restaurants.getRestaurant)
-	@Roles('SUPER_ADMIN', 'ADMIN')
+	@Roles('ADMIN', 'USER')
 	async getRestaurant(@Req() req: ReqWithUser) {
 		return tsRestHandler(c.restaurants.getRestaurant, async ({ params }) => {
 			if (!req.user) {
@@ -39,7 +39,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.getAllRestaurants)
-	@Roles('SUPER_ADMIN')
+	@Roles('ADMIN')
 	async getAllRestaurants() {
 		return tsRestHandler(c.restaurants.getAllRestaurants, async ({ query }) => {
 			const restaurants = await this.restaurantService.getAllRestaurants(query);
@@ -51,7 +51,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.createRestaurant)
-	@Roles('SUPER_ADMIN')
+	@Roles('ADMIN')
 	async createRestaurant() {
 		return tsRestHandler(c.restaurants.createRestaurant, async ({ body }) => {
 			const restaurant = await this.restaurantService.createRestaurant({
@@ -68,7 +68,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.updateRestaurant)
-	@Roles('SUPER_ADMIN', 'ADMIN')
+	@Roles('ADMIN', 'USER')
 	async updateRestaurant(@Req() req: ReqWithUser) {
 		return tsRestHandler(
 			c.restaurants.updateRestaurant,
@@ -97,7 +97,7 @@ export class RestaurantController {
 	}
 
 	@TsRestHandler(c.restaurants.deleteRestaurant)
-	@Roles('SUPER_ADMIN')
+	@Roles('ADMIN')
 	async deleteRestaurant() {
 		return tsRestHandler(c.restaurants.deleteRestaurant, async ({ params }) => {
 			await this.restaurantService.deleteRestaurant(params.id);

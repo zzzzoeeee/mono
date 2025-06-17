@@ -6,7 +6,7 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-export const UserRoleSchema = z.enum(['SUPER_ADMIN', 'ADMIN', 'STAFF']);
+export const UserRoleSchema = z.enum(['ADMIN', 'USER']);
 
 export const UserSchema = z.object({
 	id: z.string(),
