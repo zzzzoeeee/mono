@@ -27,7 +27,6 @@ export const restaurantUserContract = c.router(
 				201: RestaurantUserSchema,
 			},
 			body: z.object({
-				restaurantId: z.string(),
 				userId: z.string(),
 				role: RestaurantUserRole,
 			}),
@@ -59,6 +58,7 @@ export const restaurantUserContract = c.router(
 			path: '',
 			query: basePaginationQuery.extend({
 				sort: z.enum(['createdAt', 'updatedAt']).optional(),
+				role: RestaurantUserRole.optional(),
 			}),
 			responses: {
 				200: z.array(RestaurantUserSchema),

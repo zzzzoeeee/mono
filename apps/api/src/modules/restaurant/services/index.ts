@@ -1,1 +1,3 @@
+export * from './restaurant-user.service';
 export * from './restaurant.service';
+export * from './restaurant-user.service';
