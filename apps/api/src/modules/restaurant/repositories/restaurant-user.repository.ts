@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, RestaurantUser } from '@prisma-client';
-import { PrismaService } from 'shared/modules/prisma/prisma.service';
+import { PrismaService } from 'modules/prisma/prisma.service';
 import { parsePaginationQuery } from 'shared/utils';
 import {
 	CreateRestaurantUserInput,
