@@ -8,7 +8,7 @@ import {
 	GetRestaurantsQuery,
 	UpdateRestaurantInput,
 } from '../types';
-import { UserRole } from '../../user/types';
+import { User, UserRole } from '../../user/types';
 
 @Injectable()
 export class RestaurantService {
@@ -24,15 +24,14 @@ export class RestaurantService {
 
 	private async validateRestaurantAccess(
 		restaurantId: string,
-		userId: string | undefined,
-		userRole: UserRole | undefined,
+		actor: User | undefined,
 		errorType:
 			| typeof c.restaurants.getRestaurant
 			| typeof c.restaurants.updateRestaurant,
 	): Promise<void> {
-		if (userRole === 'USER' && userId) {
+		if (actor?.role === 'USER' && actor.id) {
 			const hasAccess = await this.checkUserAreRestaurantManager(
-				userId,
+				actor.id,
 				restaurantId,
 			);
 			if (!hasAccess) {
@@ -48,13 +47,11 @@ export class RestaurantService {
 
 	async getRestaurant(
 		restaurantId: string,
-		userId?: string,
-		userRole?: UserRole,
+		actor?: User,
 	): Promise<Restaurant> {
 		await this.validateRestaurantAccess(
 			restaurantId,
-			userId,
-			userRole,
+			actor,
 			c.restaurants.getRestaurant,
 		);
 
@@ -73,13 +70,11 @@ export class RestaurantService {
 	async updateRestaurant(
 		restaurantId: string,
 		data: UpdateRestaurantInput,
-		userId: string,
-		userRole: UserRole,
+		actor: User,
 	): Promise<Restaurant> {
 		await this.validateRestaurantAccess(
 			restaurantId,
-			userId,
-			userRole,
+			actor,
 			c.restaurants.updateRestaurant,
 		);
 		await this.getRestaurant(restaurantId);

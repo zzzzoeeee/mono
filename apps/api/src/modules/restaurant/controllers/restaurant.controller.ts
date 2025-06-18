@@ -21,8 +21,7 @@ export class RestaurantController {
 
 			const restaurant = await this.restaurantService.getRestaurant(
 				params.id,
-				user.id,
-				user.role,
+				user,
 			);
 			return {
 				status: 200,
@@ -66,16 +65,12 @@ export class RestaurantController {
 		return tsRestHandler(
 			c.restaurants.updateRestaurant,
 			async ({ params, body }) => {
-				const user = getUserOrThrow(
-					req,
-					c.restaurants.updateRestaurant,
-				);
+				const user = getUserOrThrow(req, c.restaurants.updateRestaurant);
 
 				const restaurant = await this.restaurantService.updateRestaurant(
 					params.id,
 					body,
-					user.id,
-					user.role,
+					user,
 				);
 				return {
 					status: 200,
