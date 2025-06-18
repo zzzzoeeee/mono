@@ -24,6 +24,7 @@
 		"@nestjs/passport": "^11.0.5",
 		"@nestjs/platform-express": "^11.0.1",
 		"@prisma/extension-accelerate": "^2.0.1",
+		"@quixo3/prisma-session-store": "^3.1.13",
 		"@repo/contracts": "workspace:^",
 		"@repo/typescript-config": "workspace:^",
 		"@ts-rest/core": "^3.52.1",

@@ -4,13 +4,16 @@ import env from '@config/env';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import { AuthenticatedGuard } from 'modules/auth/guards';
-import * as passport from 'passport'; 
+import * as passport from 'passport';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
+import { PrismaClient } from '@prisma-client';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
 	app.enableCors({
 		origin: env.CORS_ORIGINS,
+		credentials: true,
 	});
 
 	app.use(cookieParser());
@@ -24,6 +27,9 @@ async function bootstrap() {
 				maxAge: 60 * 60 * 1000,
 				secure: env.NODE_ENV === 'production',
 			},
+			store: new PrismaSessionStore(new PrismaClient(), {
+				checkPeriod: 2 * 60 * 1000,
+			}),
 		}),
 	);
 	app.use(passport.initialize());
