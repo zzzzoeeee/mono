@@ -2,6 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { UserSchema } from './user.contract';
+import { securityCookieAuth } from '../shared/openapi-options';
 
 extendZodWithOpenApi(z);
 
@@ -49,6 +50,9 @@ export const authContract = c.router(
 			},
 			body: z.object({}).optional(),
 			summary: 'Logout the current user',
+			metadata: {
+				...securityCookieAuth,
+			},
 		},
 	},
 	{

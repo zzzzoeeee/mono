@@ -238,7 +238,7 @@ importers:
         version: link:../config-typescript
       '@ts-rest/core':
         specifier: ^3.52.1
-        version: 3.52.1(@types/node@22.15.3)(zod@3.25.30)
+        version: 3.52.1(zod@3.25.30)
       '@ts-rest/open-api':
         specifier: ^3.52.1
         version: 3.52.1(@ts-rest/core@3.52.1)(zod@3.25.30)
@@ -3289,6 +3289,20 @@ packages:
       zod: 3.25.30
     dev: false
 
+  /@ts-rest/core@3.52.1(zod@3.25.30):
+    resolution: {integrity: sha512-tAjz7Kxq/grJodcTA1Anop4AVRDlD40fkksEV5Mmal88VoZeRKAG8oMHsDwdwPZz+B/zgnz0q2sF+cm5M7Bc7g==}
+    peerDependencies:
+      '@types/node': ^18.18.7 || >=20.8.4
+      zod: ^3.22.3
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      zod: 3.25.30
+    dev: false
+
   /@ts-rest/nest@3.52.1(@nestjs/common@11.1.2)(@nestjs/core@11.1.2)(@ts-rest/core@3.52.1)(rxjs@7.8.2)(zod@3.25.30):
     resolution: {integrity: sha512-6Abk9tRu0yxBv6PORAU6RIRizRQTQow7VeZ41j9vfEXXYUcR6DnkltGVIGSBepkg50wwJ9ygr0fplwNoWUUkBw==}
     peerDependencies:
@@ -3315,7 +3329,7 @@ packages:
       zod: ^3.22.3
     dependencies:
       '@anatine/zod-openapi': 1.14.2(openapi3-ts@2.0.2)(zod@3.25.30)
-      '@ts-rest/core': 3.52.1(@types/node@22.15.3)(zod@3.25.30)
+      '@ts-rest/core': 3.52.1(zod@3.25.30)
       openapi3-ts: 2.0.2
       zod: 3.25.30
     dev: false

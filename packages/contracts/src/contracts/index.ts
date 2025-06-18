@@ -9,6 +9,7 @@ import { menuContract } from './menu.contract';
 import { orderContract } from './order.contract';
 import { authContract } from './auth.contract';
 import { userContract } from './user.contract';
+import { restaurantUserContract } from './restaurant-user.contract';
 
 extendZodWithOpenApi(z);
 
@@ -91,6 +92,7 @@ export const c = contract.router(
 		orders: orderContract,
 		auth: authContract,
 		users: userContract,
+		restaurantUsers: restaurantUserContract,
 	},
 	{
 		commonResponses,
