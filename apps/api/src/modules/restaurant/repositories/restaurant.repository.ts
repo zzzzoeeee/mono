@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Restaurant } from '@prisma-client';
 import { PrismaService } from 'modules/prisma/prisma.service';
-import { insensitiveContainSearchQuery } from 'shared/queries/insensitive-contain-search.query';
+import { insensitiveContainSearchQuery } from 'shared/queries';
 import { parsePaginationQuery } from 'shared/utils';
 import {
 	CreateRestaurantInput,

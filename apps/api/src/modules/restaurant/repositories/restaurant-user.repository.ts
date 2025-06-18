@@ -7,6 +7,7 @@ import {
 	GetRestaurantUsersQuery,
 	UpdateRestaurantUserInput,
 } from '../types';
+import { insensitiveContainSearchQuery } from 'shared/queries';
 
 @Injectable()
 export class RestaurantUserRepository {
@@ -28,30 +29,49 @@ export class RestaurantUserRepository {
 		restaurantId: string,
 		rawQuery: GetRestaurantUsersQuery,
 	): Promise<RestaurantUser[]> {
-		const query = parsePaginationQuery(rawQuery);
+		const { skip, limit, sort, order, role, search } =
+			parsePaginationQuery(rawQuery);
+
+		const whereOptions: Prisma.RestaurantUserWhereInput = {
+			restaurantId,
+			role,
+			...(search
+				? {
+						OR: [
+							{
+								user: {
+									firstName: insensitiveContainSearchQuery(search),
+								},
+							},
+							{
+								user: {
+									lastName: insensitiveContainSearchQuery(search),
+								},
+							},
+						],
+					}
+				: {}),
+		};
 
 		const orderByOptions: Record<
-			NonNullable<typeof query.sort>,
+			NonNullable<typeof sort>,
 			Prisma.Enumerable<Prisma.RestaurantUserOrderByWithRelationInput>
 		> = {
 			createdAt: {
-				createdAt: query.order,
+				createdAt: order,
 			},
 			updatedAt: {
-				updatedAt: query.order,
+				updatedAt: order,
 			},
 		};
 
-		const orderBy = orderByOptions[query.sort || 'createdAt'];
+		const orderBy = orderByOptions[sort || 'createdAt'];
 
 		return this.prisma.restaurantUser.findMany({
-			where: {
-				restaurantId,
-				role: query.role,
-			},
+			where: whereOptions,
 			orderBy,
-			take: query.limit,
-			skip: query.skip,
+			take: limit,
+			skip,
 		});
 	}
 
