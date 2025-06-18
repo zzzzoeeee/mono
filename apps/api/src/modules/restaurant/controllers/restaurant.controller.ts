@@ -6,7 +6,7 @@ import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../../auth/guards';
 import { Roles } from '../../auth/decorators';
 import { ReqWithUser } from 'shared/types';
-import { TsRestException } from '@ts-rest/nest';
+import { getUserOrThrow } from 'shared/utils';
 
 @Controller()
 @UseGuards(RolesGuard)
@@ -17,19 +17,12 @@ export class RestaurantController {
 	@Roles('ADMIN', 'USER')
 	async getRestaurant(@Req() req: ReqWithUser) {
 		return tsRestHandler(c.restaurants.getRestaurant, async ({ params }) => {
-			if (!req.user) {
-				throw new TsRestException(c.restaurants.getRestaurant, {
-					body: {
-						message: 'Unauthorized',
-					},
-					status: 401,
-				});
-			}
+			const user = getUserOrThrow(req, c.restaurants.getRestaurant);
 
 			const restaurant = await this.restaurantService.getRestaurant(
 				params.id,
-				req.user.id,
-				req.user.role,
+				user.id,
+				user.role,
 			);
 			return {
 				status: 200,
@@ -73,20 +66,16 @@ export class RestaurantController {
 		return tsRestHandler(
 			c.restaurants.updateRestaurant,
 			async ({ params, body }) => {
-				if (!req.user) {
-					throw new TsRestException(c.restaurants.updateRestaurant, {
-						body: {
-							message: 'Unauthorized',
-						},
-						status: 401,
-					});
-				}
+				const user = getUserOrThrow(
+					req,
+					c.restaurants.updateRestaurant,
+				);
 
 				const restaurant = await this.restaurantService.updateRestaurant(
 					params.id,
 					body,
-					req.user.id,
-					req.user.role,
+					user.id,
+					user.role,
 				);
 				return {
 					status: 200,

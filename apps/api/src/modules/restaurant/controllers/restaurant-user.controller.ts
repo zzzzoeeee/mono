@@ -6,7 +6,7 @@ import { RolesGuard } from '../../auth/guards';
 import { Roles } from '../../auth/decorators';
 import { ReqWithUser } from 'shared/types';
 import { RestaurantUserService } from '../services';
-import { throwIfNoUserInRequest } from 'shared/utils';
+import { getUserOrThrow } from 'shared/utils';
 
 @Controller()
 @UseGuards(RolesGuard)
@@ -19,7 +19,7 @@ export class RestaurantUserController {
 		return tsRestHandler(
 			c.restaurantUsers.createRestaurantUser,
 			async ({ params, body }) => {
-				const user = throwIfNoUserInRequest(
+				const user = getUserOrThrow(
 					req,
 					c.restaurantUsers.createRestaurantUser,
 				);
@@ -44,7 +44,7 @@ export class RestaurantUserController {
 		return tsRestHandler(
 			c.restaurantUsers.updateRestaurantUser,
 			async ({ params, body }) => {
-				const user = throwIfNoUserInRequest(
+				const user = getUserOrThrow(
 					req,
 					c.restaurantUsers.updateRestaurantUser,
 				);
@@ -70,7 +70,7 @@ export class RestaurantUserController {
 		return tsRestHandler(
 			c.restaurantUsers.deleteRestaurantUser,
 			async ({ params }) => {
-				const user = throwIfNoUserInRequest(
+				const user = getUserOrThrow(
 					req,
 					c.restaurantUsers.deleteRestaurantUser,
 				);
@@ -94,7 +94,7 @@ export class RestaurantUserController {
 		return tsRestHandler(
 			c.restaurantUsers.getAllRestaurantUsers,
 			async ({ params, query }) => {
-				const user = throwIfNoUserInRequest(
+				const user = getUserOrThrow(
 					req,
 					c.restaurantUsers.getAllRestaurantUsers,
 				);
@@ -119,7 +119,7 @@ export class RestaurantUserController {
 		return tsRestHandler(
 			c.restaurantUsers.getRestaurantUser,
 			async ({ params }) => {
-				const user = throwIfNoUserInRequest(
+				const user = getUserOrThrow(
 					req,
 					c.restaurantUsers.getRestaurantUser,
 				);
