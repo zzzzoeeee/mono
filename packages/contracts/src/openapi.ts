@@ -62,6 +62,10 @@ const openApiDocument = generateOpenApi(
 
 const theme = new SwaggerTheme();
 
+app.use('/openapi', (req, res) => {
+	res.json(openApiDocument);
+});
+
 app.use(
 	'/',
 	swaggerUi.serve,
