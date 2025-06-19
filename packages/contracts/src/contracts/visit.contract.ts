@@ -7,9 +7,9 @@ extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const VisitStatus = z.enum(['USING', 'FINISHED']);
+export const VisitStatus = z.enum(['USING', 'FINISHED']);
 
-const VisitSchema = z.object({
+export const VisitSchema = z.object({
 	id: z.string(),
 	tableId: z.string(),
 	pricePlanId: z.string(),

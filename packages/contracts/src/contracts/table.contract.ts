@@ -2,21 +2,22 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { basePaginationQuery } from '../shared/queries';
+import { VisitSchema, VisitStatus } from './visit.contract';
+import { zodBooleanString } from '../shared/utils';
 
 extendZodWithOpenApi(z);
 
 const c = initContract();
 
-const TableStatus = z.enum(['AVAILABLE', 'OCCUPIED']);
-
 const TablesSchema = z.object({
 	id: z.string(),
 	restaurantId: z.string(),
 	name: z.string(),
-	capacity: z.number(),
-	status: TableStatus,
+	capacity: z.number().min(1).max(100),
+	isActive: z.boolean(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
+	lastVisit: VisitSchema.nullable(),
 });
 
 export const tableContract = c.router(
@@ -30,8 +31,8 @@ export const tableContract = c.router(
 			body: z.object({
 				restaurantId: z.string(),
 				name: z.string(),
-				capacity: z.number(),
-				status: TableStatus,
+				capacity: z.number().min(1).max(100),
+				isActive: z.boolean(),
 			}),
 			summary: 'Create a table',
 		},
@@ -43,8 +44,8 @@ export const tableContract = c.router(
 			},
 			body: z.object({
 				name: z.string(),
-				capacity: z.number(),
-				status: TableStatus,
+				capacity: z.number().min(1).max(100),
+				isActive: z.boolean(),
 			}),
 			summary: 'Update a table by id',
 		},
@@ -62,9 +63,14 @@ export const tableContract = c.router(
 			method: 'GET',
 			path: '',
 			query: basePaginationQuery.extend({
-				capacity: z.number().optional(),
-				status: TableStatus.optional(),
-				sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+				capacity: z
+					.preprocess((val) => Number(val), z.number().min(1).max(100))
+					.optional(),
+				isActive: zodBooleanString.optional(),
+				visitStatus: VisitStatus.optional(),
+				sort: z
+					.enum(['capacity', 'name', 'createdAt', 'updatedAt', 'isActive'])
+					.optional(),
 			}),
 			responses: {
 				200: z.array(TablesSchema),

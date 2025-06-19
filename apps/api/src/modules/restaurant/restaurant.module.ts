@@ -3,16 +3,19 @@ import {
 	RestaurantController,
 	RestaurantUserController,
 	PricePlanController,
+	TableController,
 } from './controllers';
 import {
 	RestaurantService,
 	RestaurantUserService,
 	PricePlanService,
+	TableService,
 } from './services';
 import {
 	RestaurantRepository,
 	RestaurantUserRepository,
 	PricePlanRepository,
+	TableRepository,
 } from './repositories';
 
 @Module({
@@ -21,6 +24,7 @@ import {
 		RestaurantController,
 		RestaurantUserController,
 		PricePlanController,
+		TableController,
 	],
 	providers: [
 		RestaurantService,
@@ -29,7 +33,9 @@ import {
 		RestaurantUserRepository,
 		PricePlanService,
 		PricePlanRepository,
+		TableService,
+		TableRepository,
 	],
-	exports: [RestaurantService, RestaurantUserService, PricePlanService],
+	exports: [],
 })
 export class RestaurantModule {}
