@@ -2,6 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { basePaginationQuery } from '../shared/queries';
+import { zodBooleanString } from '../shared/utils';
 
 extendZodWithOpenApi(z);
 
@@ -12,7 +13,8 @@ const PricePlanSchema = z.object({
 	restaurantId: z.string(),
 	name: z.string(),
 	description: z.string().nullable(),
-	price: z.number(),
+	price: z.number().min(0),
+	isActive: z.boolean(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });
@@ -26,10 +28,10 @@ export const pricePlanContract = c.router(
 				201: PricePlanSchema,
 			},
 			body: z.object({
-				restaurantId: z.string(),
 				name: z.string(),
 				description: z.string().nullable(),
-				price: z.number(),
+				price: z.number().min(0),
+				isActive: z.boolean(),
 			}),
 			summary: 'Create a new price plan',
 		},
@@ -42,7 +44,8 @@ export const pricePlanContract = c.router(
 			body: z.object({
 				name: z.string(),
 				description: z.string().nullable(),
-				price: z.number(),
+				price: z.number().min(0),
+				isActive: z.boolean(),
 			}),
 			summary: 'Update a price plan',
 		},
@@ -53,7 +56,11 @@ export const pricePlanContract = c.router(
 				200: z.array(PricePlanSchema),
 			},
 			query: basePaginationQuery.extend({
-				sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+				sort: z
+					.enum(['price', 'isActive', 'name', 'createdAt', 'updatedAt'])
+					.default('price'),
+				order: z.enum(['asc', 'desc']).default('asc'),
+				isActive: zodBooleanString.optional(),
 			}),
 			summary: 'Get price plans for a restaurant',
 		},

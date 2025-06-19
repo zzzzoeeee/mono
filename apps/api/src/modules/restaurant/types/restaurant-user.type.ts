@@ -1,10 +1,12 @@
 import { basePaginationQuery } from 'shared/types';
 
+export type RestaurantUserRoles = 'MANAGER' | 'STAFF';
+
 export type RestaurantUser = {
 	id: string;
 	restaurantId: string;
 	userId: string;
-	role: 'MANAGER' | 'STAFF';
+	role: RestaurantUserRoles;
 	createdAt: Date;
 	updatedAt: Date;
 };

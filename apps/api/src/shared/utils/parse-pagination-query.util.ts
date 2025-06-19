@@ -2,7 +2,7 @@ type basePagination = {
 	page?: number;
 	limit?: number;
 	order?: 'asc' | 'desc';
-	sort?: 'name' | 'createdAt' | 'updatedAt' | undefined;
+	sort?: string | undefined;
 	search?: string | undefined;
 };
 
