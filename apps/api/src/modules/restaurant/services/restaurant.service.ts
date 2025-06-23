@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Restaurant } from '@prisma-client';
+import { Restaurant, RestaurantUserRole } from '@prisma-client';
 import { RestaurantRepository } from '../repositories/restaurant.repository';
 import { c } from '@repo/contracts';
 import { TsRestException } from '@ts-rest/nest';
@@ -8,7 +8,6 @@ import {
 	GetRestaurantsQuery,
 	UpdateRestaurantInput,
 } from '../types';
-import { User, UserRole } from '../../user/types';
 
 @Injectable()
 export class RestaurantService {
@@ -22,39 +21,7 @@ export class RestaurantService {
 		return this.restaurantRepository.findAll(query);
 	}
 
-	private async validateRestaurantAccess(
-		restaurantId: string,
-		actor: User | undefined,
-		errorType:
-			| typeof c.restaurants.getRestaurant
-			| typeof c.restaurants.updateRestaurant,
-	): Promise<void> {
-		if (actor?.role === 'USER' && actor.id) {
-			const hasAccess = await this.checkUserAreRestaurantManager(
-				actor.id,
-				restaurantId,
-			);
-			if (!hasAccess) {
-				throw new TsRestException(errorType, {
-					body: {
-						message: 'Access denied to this restaurant',
-					},
-					status: 403,
-				});
-			}
-		}
-	}
-
-	async getRestaurant(
-		restaurantId: string,
-		actor?: User,
-	): Promise<Restaurant> {
-		await this.validateRestaurantAccess(
-			restaurantId,
-			actor,
-			c.restaurants.getRestaurant,
-		);
-
+	async getRestaurant(restaurantId: string): Promise<Restaurant> {
 		const restaurant = await this.restaurantRepository.findOne(restaurantId);
 		if (!restaurant) {
 			throw new TsRestException(c.restaurants.getRestaurant, {
@@ -70,13 +37,7 @@ export class RestaurantService {
 	async updateRestaurant(
 		restaurantId: string,
 		data: UpdateRestaurantInput,
-		actor: User,
 	): Promise<Restaurant> {
-		await this.validateRestaurantAccess(
-			restaurantId,
-			actor,
-			c.restaurants.updateRestaurant,
-		);
 		await this.getRestaurant(restaurantId);
 		return this.restaurantRepository.update(restaurantId, data);
 	}
@@ -86,13 +47,15 @@ export class RestaurantService {
 		await this.restaurantRepository.remove(restaurantId);
 	}
 
-	async checkUserAreRestaurantManager(
+	async isUserInRestaurantWithRoles(
 		userId: string,
 		restaurantId: string,
+		roles: RestaurantUserRole[] | RestaurantUserRole,
 	): Promise<boolean> {
-		return this.restaurantRepository.checkUserAreRestaurantManager(
+		return this.restaurantRepository.isUserInRestaurantWithRoles(
 			userId,
 			restaurantId,
+			roles,
 		);
 	}
 }

@@ -36,7 +36,7 @@ export const restaurantContract = c.router({
 	},
 	updateRestaurant: {
 		method: 'PUT',
-		path: '/restaurants/:id',
+		path: '/restaurants/:restaurantId',
 		responses: {
 			200: RestaurantSchema,
 		},
@@ -51,7 +51,7 @@ export const restaurantContract = c.router({
 	},
 	deleteRestaurant: {
 		method: 'DELETE',
-		path: '/restaurants/:id',
+		path: '/restaurants/:restaurantId',
 		responses: {
 			200: z.object({
 				message: z.string(),
@@ -72,7 +72,7 @@ export const restaurantContract = c.router({
 	},
 	getRestaurant: {
 		method: 'GET',
-		path: '/restaurants/:id',
+		path: '/restaurants/:restaurantId',
 		responses: {
 			200: RestaurantSchema,
 		},

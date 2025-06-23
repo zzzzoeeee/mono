@@ -6,6 +6,7 @@ import { parsePaginationQuery } from 'shared/utils';
 import {
 	CreateRestaurantInput,
 	GetRestaurantsQuery,
+	RestaurantUserRole,
 	UpdateRestaurantInput,
 } from '../types';
 
@@ -73,15 +74,18 @@ export class RestaurantRepository {
 		});
 	}
 
-	async checkUserAreRestaurantManager(
+	async isUserInRestaurantWithRoles(
 		userId: string,
 		restaurantId: string,
+		roles: RestaurantUserRole[] | RestaurantUserRole,
 	): Promise<boolean> {
 		const restaurantUser = await this.prisma.restaurantUser.findFirst({
 			where: {
 				userId,
 				restaurantId,
-				role: 'MANAGER',
+				role: {
+					in: Array.isArray(roles) ? roles : [roles],
+				},
 			},
 		});
 		return !!restaurantUser;

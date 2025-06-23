@@ -19,8 +19,15 @@ export class PricePlanRepository {
 		return this.prisma.pricePlan.create({ data });
 	}
 
-	async update(id: string, data: UpdatePricePlanInput): Promise<PricePlan> {
-		return this.prisma.pricePlan.update({ where: { id }, data });
+	async update(
+		restaurantId: string,
+		pricePlanId: string,
+		data: UpdatePricePlanInput,
+	): Promise<PricePlan> {
+		return this.prisma.pricePlan.update({
+			where: { id: pricePlanId, restaurantId },
+			data,
+		});
 	}
 
 	async findAll(
@@ -75,13 +82,9 @@ export class PricePlanRepository {
 		});
 	}
 
-	async findOne(restaurantId: string, id: string): Promise<PricePlan | null> {
-		return this.prisma.pricePlan.findUnique({
-			where: { id, restaurantId },
+	async remove(restaurantId: string, pricePlanId: string): Promise<void> {
+		await this.prisma.pricePlan.delete({
+			where: { id: pricePlanId, restaurantId },
 		});
-	}
-
-	async remove(id: string): Promise<void> {
-		await this.prisma.pricePlan.delete({ where: { id } });
 	}
 }

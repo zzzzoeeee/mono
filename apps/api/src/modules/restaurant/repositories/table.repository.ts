@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma-client';
+import { Prisma } from '@prisma-client';
 import {
 	CreateTableInput,
 	GetTablesQuery,
@@ -27,8 +27,13 @@ export class TableRepository {
 		};
 	}
 
-	async getTableById(id: string): Promise<Table | null> {
-		const table = await this.prisma.table.findUnique({ where: { id } });
+	async getTableById(
+		restaurantId: string,
+		tableId: string,
+	): Promise<Table | null> {
+		const table = await this.prisma.table.findUnique({
+			where: { id: tableId, restaurantId },
+		});
 		return table
 			? {
 					...table,
@@ -37,16 +42,25 @@ export class TableRepository {
 			: null;
 	}
 
-	async updateTable(id: string, data: UpdateTableInput): Promise<Table> {
-		const table = await this.prisma.table.update({ where: { id }, data });
+	async updateTable(
+		restaurantId: string,
+		tableId: string,
+		data: UpdateTableInput,
+	): Promise<Table> {
+		const table = await this.prisma.table.update({
+			where: { id: tableId, restaurantId },
+			data,
+		});
 		return {
 			...table,
 			lastVisit: null,
 		};
 	}
 
-	async deleteTable(id: string): Promise<Table> {
-		const table = await this.prisma.table.delete({ where: { id } });
+	async deleteTable(restaurantId: string, tableId: string): Promise<Table> {
+		const table = await this.prisma.table.delete({
+			where: { id: tableId, restaurantId },
+		});
 		return {
 			...table,
 			lastVisit: null,

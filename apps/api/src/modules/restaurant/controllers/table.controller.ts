@@ -2,26 +2,21 @@ import { Controller } from '@nestjs/common';
 import { TableService } from '../services';
 import { TsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
-import { ReqWithUser } from 'shared/types';
-import { getUserOrThrow } from 'shared/utils';
 import { tsRestHandler } from '@ts-rest/nest';
-import { Req } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common';
-import { RolesGuard } from '../../auth/guards';
-import { Roles } from '../../auth/decorators';
+import { RestaurantUserGuard } from '../../auth/guards';
+import { RestaurantUserRoles } from '../../auth/decorators';
 
 @Controller()
-@UseGuards(RolesGuard)
-@Roles('ADMIN', 'USER')
+@UseGuards(RestaurantUserGuard)
+@RestaurantUserRoles('MANAGER')
 export class TableController {
 	constructor(private readonly tableService: TableService) {}
 
 	@TsRestHandler(c.tables.createTable)
-	async createTable(@Req() req: ReqWithUser) {
+	async createTable() {
 		return tsRestHandler(c.tables.createTable, async ({ body, params }) => {
-			const user = getUserOrThrow(req, c.tables.createTable);
 			const table = await this.tableService.createTable(
-				user,
 				params.restaurantId,
 				body,
 			);
@@ -33,11 +28,9 @@ export class TableController {
 	}
 
 	@TsRestHandler(c.tables.updateTable)
-	async updateTable(@Req() req: ReqWithUser) {
+	async updateTable() {
 		return tsRestHandler(c.tables.updateTable, async ({ body, params }) => {
-			const user = getUserOrThrow(req, c.tables.updateTable);
 			const table = await this.tableService.updateTable(
-				user,
 				params.restaurantId,
 				params.id,
 				body,
@@ -50,14 +43,9 @@ export class TableController {
 	}
 
 	@TsRestHandler(c.tables.deleteTable)
-	async deleteTable(@Req() req: ReqWithUser) {
+	async deleteTable() {
 		return tsRestHandler(c.tables.deleteTable, async ({ params }) => {
-			const user = getUserOrThrow(req, c.tables.deleteTable);
-			const table = await this.tableService.deleteTable(
-				user,
-				params.restaurantId,
-				params.id,
-			);
+			await this.tableService.deleteTable(params.restaurantId, params.id);
 			return {
 				status: 200,
 				body: { message: 'Table deleted successfully' },
@@ -66,11 +54,9 @@ export class TableController {
 	}
 
 	@TsRestHandler(c.tables.getTable)
-	async getTable(@Req() req: ReqWithUser) {
+	async getTable() {
 		return tsRestHandler(c.tables.getTable, async ({ params }) => {
-			const user = getUserOrThrow(req, c.tables.getTable);
 			const table = await this.tableService.getTableById(
-				user,
 				params.restaurantId,
 				params.id,
 			);
@@ -82,11 +68,9 @@ export class TableController {
 	}
 
 	@TsRestHandler(c.tables.getAllTables)
-	async getAllTables(@Req() req: ReqWithUser) {
+	async getAllTables() {
 		return tsRestHandler(c.tables.getAllTables, async ({ query, params }) => {
-			const user = getUserOrThrow(req, c.tables.getAllTables);
 			const tables = await this.tableService.getAllTables(
-				user,
 				params.restaurantId,
 				query,
 			);

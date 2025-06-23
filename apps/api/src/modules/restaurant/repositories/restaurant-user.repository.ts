@@ -75,25 +75,32 @@ export class RestaurantUserRepository {
 		});
 	}
 
-	async findOne(id: string): Promise<RestaurantUser | null> {
+	async findOne(
+		restaurantId: string,
+		restaurantUserId: string,
+	): Promise<RestaurantUser | null> {
 		return this.prisma.restaurantUser.findUnique({
-			where: { id },
+			where: { id: restaurantUserId, restaurantId },
 		});
 	}
 
 	async update(
-		id: string,
+		restaurantId: string,
+		restaurantUserId: string,
 		data: UpdateRestaurantUserInput,
 	): Promise<RestaurantUser> {
 		return this.prisma.restaurantUser.update({
-			where: { id },
+			where: { id: restaurantUserId, restaurantId },
 			data,
 		});
 	}
 
-	async remove(id: string): Promise<RestaurantUser> {
+	async remove(
+		restaurantId: string,
+		restaurantUserId: string,
+	): Promise<RestaurantUser> {
 		return this.prisma.restaurantUser.delete({
-			where: { id },
+			where: { id: restaurantUserId, restaurantId },
 		});
 	}
 }

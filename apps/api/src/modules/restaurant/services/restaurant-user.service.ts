@@ -7,56 +7,19 @@ import {
 	GetRestaurantUsersQuery,
 	UpdateRestaurantUserInput,
 } from '../types';
-import {
-	RestaurantUserRepository,
-	RestaurantRepository,
-} from '../repositories';
-import { User, UserRole } from '../../user/types';
+import { RestaurantUserRepository } from '../repositories';
+import { User } from '../../user/types';
 
 @Injectable()
 export class RestaurantUserService {
 	constructor(
 		private readonly restaurantUserRepository: RestaurantUserRepository,
-		private readonly restaurantRepository: RestaurantRepository,
 	) {}
-
-	private async validateRestaurantUserAccess(
-		restaurantId: string,
-		actor: User | undefined,
-		errorType:
-			| typeof c.restaurantUsers.createRestaurantUser
-			| typeof c.restaurantUsers.updateRestaurantUser
-			| typeof c.restaurantUsers.deleteRestaurantUser
-			| typeof c.restaurantUsers.getRestaurantUser
-			| typeof c.restaurantUsers.getAllRestaurantUsers,
-	): Promise<void> {
-		if (actor?.role === 'USER' && actor.id) {
-			const hasAccess =
-				await this.restaurantRepository.checkUserAreRestaurantManager(
-					actor.id,
-					restaurantId,
-				);
-			if (!hasAccess) {
-				throw new TsRestException(errorType, {
-					body: {
-						message: 'Access denied to this restaurant',
-					},
-					status: 403,
-				});
-			}
-		}
-	}
 
 	async createRestaurantUser(
 		restaurantId: string,
 		data: CreateRestaurantUserInput,
-		actor: User,
 	): Promise<RestaurantUser> {
-		await this.validateRestaurantUserAccess(
-			restaurantId,
-			actor,
-			c.restaurantUsers.createRestaurantUser,
-		);
 		return this.restaurantUserRepository.create(restaurantId, data);
 	}
 
@@ -87,18 +50,15 @@ export class RestaurantUserService {
 		data: UpdateRestaurantUserInput,
 		actor: User,
 	): Promise<RestaurantUser> {
-		await this.validateRestaurantUserAccess(
-			restaurantId,
-			actor,
-			c.restaurantUsers.updateRestaurantUser,
-		);
-
 		if (actor.role !== 'ADMIN' && data.role === 'STAFF') {
 			await this.ensureNotLastManager(restaurantId, restaurantUserId);
 		}
 
-		await this.getRestaurantUser(restaurantId, restaurantUserId);
-		return this.restaurantUserRepository.update(restaurantUserId, data);
+		return this.restaurantUserRepository.update(
+			restaurantId,
+			restaurantUserId,
+			data,
+		);
 	}
 
 	async deleteRestaurantUser(
@@ -106,45 +66,28 @@ export class RestaurantUserService {
 		restaurantUserId: string,
 		actor: User,
 	): Promise<RestaurantUser> {
-		await this.validateRestaurantUserAccess(
-			restaurantId,
-			actor,
-			c.restaurantUsers.deleteRestaurantUser,
-		);
-
 		if (actor.role !== 'ADMIN') {
 			await this.ensureNotLastManager(restaurantId, restaurantUserId);
 		}
 
-		await this.getRestaurantUser(restaurantId, restaurantUserId);
-		return this.restaurantUserRepository.remove(restaurantUserId);
+		return this.restaurantUserRepository.remove(restaurantId, restaurantUserId);
 	}
 
 	async getAllRestaurantUsers(
 		restaurantId: string,
 		query: GetRestaurantUsersQuery,
-		actor: User,
 	): Promise<RestaurantUser[]> {
-		await this.validateRestaurantUserAccess(
-			restaurantId,
-			actor,
-			c.restaurantUsers.getAllRestaurantUsers,
-		);
 		return this.restaurantUserRepository.findAll(restaurantId, query);
 	}
 
 	async getRestaurantUser(
 		restaurantId: string,
 		restaurantUserId: string,
-		actor?: User,
 	): Promise<RestaurantUser> {
-		await this.validateRestaurantUserAccess(
+		const restaurantUser = await this.restaurantUserRepository.findOne(
 			restaurantId,
-			actor,
-			c.restaurantUsers.getRestaurantUser,
+			restaurantUserId,
 		);
-		const restaurantUser =
-			await this.restaurantUserRepository.findOne(restaurantUserId);
 		if (!restaurantUser || restaurantUser.restaurantId !== restaurantId) {
 			throw new TsRestException(c.restaurantUsers.getRestaurantUser, {
 				body: {
