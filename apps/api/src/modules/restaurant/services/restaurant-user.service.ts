@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { RestaurantUser } from '@prisma-client';
-import { TsRestException } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
+import { TsRestException } from '@ts-rest/nest';
+import { User } from '../../user/types';
+import { RestaurantUserRepository } from '../repositories';
 import {
 	CreateRestaurantUserInput,
 	GetRestaurantUsersQuery,
 	UpdateRestaurantUserInput,
 } from '../types';
-import { RestaurantUserRepository } from '../repositories';
-import { User } from '../../user/types';
 
 @Injectable()
 export class RestaurantUserService {

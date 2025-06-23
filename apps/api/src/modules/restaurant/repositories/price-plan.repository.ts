@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
 import { PricePlan, Prisma } from '@prisma-client';
+import { insensitiveContainSearchQuery } from 'shared/queries';
+import { parsePaginationQuery } from 'shared/utils';
+import { PrismaService } from '../../prisma/prisma.service';
 import {
-	GetPricePlansQuery,
 	CreatePricePlanInput,
+	GetPricePlansQuery,
 	UpdatePricePlanInput,
 } from '../types';
-import { parsePaginationQuery } from 'shared/utils';
-import { insensitiveContainSearchQuery } from 'shared/queries';
 
 @Injectable()
 export class PricePlanRepository {

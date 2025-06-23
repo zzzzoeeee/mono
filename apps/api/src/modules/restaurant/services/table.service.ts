@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { c } from '@repo/contracts';
+import { TsRestException } from '@ts-rest/nest';
 import { TableRepository } from '../repositories';
 import {
 	CreateTableInput,
@@ -6,8 +8,6 @@ import {
 	Table,
 	UpdateTableInput,
 } from '../types';
-import { c } from '@repo/contracts';
-import { TsRestException } from '@ts-rest/nest';
 
 @Injectable()
 export class TableService {
@@ -21,10 +21,7 @@ export class TableService {
 	}
 
 	async getTable(restaurantId: string, tableId: string): Promise<Table> {
-		const table = await this.tableRepository.findOne(
-			restaurantId,
-			tableId,
-		);
+		const table = await this.tableRepository.findOne(restaurantId, tableId);
 
 		if (!table) {
 			throw new TsRestException(c.tables.getTable, {

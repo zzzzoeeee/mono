@@ -1,9 +1,8 @@
-import { Controller } from '@nestjs/common';
-import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import { Controller, UseGuards } from '@nestjs/common';
 import { c } from '@repo/contracts';
-import { UseGuards } from '@nestjs/common';
-import { RestaurantUserGuard } from '../../auth/guards';
+import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { RestaurantUserRoles } from '../../auth/decorators';
+import { RestaurantUserGuard } from '../../auth/guards';
 import { PricePlanService } from '../services';
 
 @Controller()

@@ -1,10 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './services';
-import { AuthController } from './controllers';
-import { LocalStrategy } from './strategies';
 import { UserModule } from '../user/user.module';
+import { AuthController } from './controllers';
 import { SessionSerializer } from './serializers';
+import { AuthService } from './services';
+import { LocalStrategy } from './strategies';
 
 @Global()
 @Module({

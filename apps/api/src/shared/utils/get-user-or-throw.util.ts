@@ -1,7 +1,7 @@
-import { ReqWithUser } from 'shared/types';
-import { TsRestException } from '@ts-rest/nest';
 import { AppRoute } from '@ts-rest/core';
+import { TsRestException } from '@ts-rest/nest';
 import { User } from 'modules/user/types';
+import { ReqWithUser } from 'shared/types';
 
 export const getUserOrThrow = (req: ReqWithUser, errorType: AppRoute): User => {
 	if (!req.user) {

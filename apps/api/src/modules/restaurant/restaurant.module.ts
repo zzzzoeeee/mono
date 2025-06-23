@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 import {
+	PricePlanController,
 	RestaurantController,
 	RestaurantUserController,
-	PricePlanController,
 	TableController,
 } from './controllers';
 import {
-	RestaurantService,
-	RestaurantUserService,
-	PricePlanService,
-	TableService,
-} from './services';
-import {
+	PricePlanRepository,
 	RestaurantRepository,
 	RestaurantUserRepository,
-	PricePlanRepository,
 	TableRepository,
 } from './repositories';
+import {
+	PricePlanService,
+	RestaurantService,
+	RestaurantUserService,
+	TableService,
+} from './services';
 
 @Module({
 	imports: [],

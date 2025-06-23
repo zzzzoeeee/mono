@@ -1,9 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { RESTAURANT_USER_ROLES_KEY } from '../decorators';
-import { RestaurantUserRole } from '../../restaurant/types';
 import { ReqWithUser } from 'shared/types';
 import { RestaurantService } from '../../restaurant/services';
+import { RestaurantUserRole } from '../../restaurant/types';
+import { RESTAURANT_USER_ROLES_KEY } from '../decorators';
 
 @Injectable()
 export class RestaurantUserGuard implements CanActivate {

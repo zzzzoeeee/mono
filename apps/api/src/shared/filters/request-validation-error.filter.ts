@@ -1,13 +1,12 @@
-import { Catch } from '@nestjs/common';
-import { RequestValidationError } from '@ts-rest/nest';
-import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { Response } from 'express';
 import { commonResponses } from '@repo/contracts';
+import { RequestValidationError } from '@ts-rest/nest';
+import { Response } from 'express';
 import { z } from 'zod';
 
 const STATUS_CODE = 400;
-type BadRequestResponseType = z.infer<typeof commonResponses['400']>;
+type BadRequestResponseType = z.infer<(typeof commonResponses)['400']>;
 
 @Catch(RequestValidationError)
 export class RequestValidationErrorFilter implements ExceptionFilter {

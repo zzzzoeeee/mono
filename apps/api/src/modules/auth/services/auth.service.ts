@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { c } from '@repo/contracts';
+import { TsRestException } from '@ts-rest/nest';
+import * as argon2 from 'argon2';
 import { UserService } from '../../user/services';
 import { CreateUserInput, User } from '../../user/types';
 import { LoginInput } from '../types';
-import * as argon2 from 'argon2';
-import { TsRestException } from '@ts-rest/nest';
-import { c } from '@repo/contracts';
 
 @Injectable()
 export class AuthService {

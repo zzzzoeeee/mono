@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories';
-import { TsRestException } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
-import { CreateUserInput, User, UserWithPassword } from '../types';
+import { TsRestException } from '@ts-rest/nest';
+import { UserRepository } from '../repositories';
+import { CreateUserInput, User } from '../types';
 
 @Injectable()
 export class UserService {

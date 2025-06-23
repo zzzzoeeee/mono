@@ -1,8 +1,7 @@
-import { Controller, Req } from '@nestjs/common';
-import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { c } from '@repo/contracts';
+import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { ReqWithUser } from 'shared/types';
-import { UseGuards } from '@nestjs/common';
 import { AuthenticatedGuard } from '../../auth/guards/authenticated.guard';
 
 @Controller()

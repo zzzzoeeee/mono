@@ -1,11 +1,9 @@
-import { Controller } from '@nestjs/common';
-import { TableService } from '../services';
-import { TsRestHandler } from '@ts-rest/nest';
+import { Controller, UseGuards } from '@nestjs/common';
 import { c } from '@repo/contracts';
-import { tsRestHandler } from '@ts-rest/nest';
-import { UseGuards } from '@nestjs/common';
-import { RestaurantUserGuard } from '../../auth/guards';
+import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { RestaurantUserRoles } from '../../auth/decorators';
+import { RestaurantUserGuard } from '../../auth/guards';
+import { TableService } from '../services';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)

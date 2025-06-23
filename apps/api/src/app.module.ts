@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RestaurantModule } from './modules/restaurant/restaurant.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { APP_FILTER } from '@nestjs/core';
-import { PrismaClientExceptionFilter } from './shared/filters';
 import { AuthModule } from './modules/auth/auth.module';
-import { RequestValidationErrorFilter } from './shared/filters';
+import { PrismaModule } from './modules/prisma/prisma.module';
+import { RestaurantModule } from './modules/restaurant/restaurant.module';
+import {
+	PrismaClientExceptionFilter,
+	RequestValidationErrorFilter,
+} from './shared/filters';
 
 @Module({
 	imports: [PrismaModule, AuthModule, RestaurantModule],

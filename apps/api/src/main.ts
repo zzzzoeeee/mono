@@ -1,12 +1,12 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import env from '@config/env';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { PrismaClient } from '@prisma-client';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import { AuthenticatedGuard } from 'modules/auth/guards';
 import * as passport from 'passport';
-import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import { PrismaClient } from '@prisma-client';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);

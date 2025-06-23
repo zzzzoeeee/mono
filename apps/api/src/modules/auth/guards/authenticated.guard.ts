@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ReqWithUser } from 'shared/types';
 import { Reflector } from '@nestjs/core';
+import { ReqWithUser } from 'shared/types';
 import { IS_PUBLIC_KEY } from '../decorators';
 
 @Injectable()

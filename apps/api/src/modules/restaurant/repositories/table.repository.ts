@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client';
+import { PrismaService } from 'modules/prisma/prisma.service';
+import { insensitiveContainSearchQuery } from 'shared/queries';
+import { parsePaginationQuery } from 'shared/utils';
 import {
 	CreateTableInput,
 	GetTablesQuery,
 	Table,
 	UpdateTableInput,
 } from '../types';
-import { parsePaginationQuery } from 'shared/utils';
-import { insensitiveContainSearchQuery } from 'shared/queries';
-import { PrismaService } from 'modules/prisma/prisma.service';
 
 @Injectable()
 export class TableRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async create(
-		restaurantId: string,
-		data: CreateTableInput,
-	): Promise<Table> {
+	async create(restaurantId: string, data: CreateTableInput): Promise<Table> {
 		const table = await this.prisma.table.create({
 			data: { ...data, restaurantId },
 		});
@@ -27,10 +24,7 @@ export class TableRepository {
 		};
 	}
 
-	async findOne(
-		restaurantId: string,
-		tableId: string,
-	): Promise<Table | null> {
+	async findOne(restaurantId: string, tableId: string): Promise<Table | null> {
 		const table = await this.prisma.table.findUnique({
 			where: { id: tableId, restaurantId },
 		});

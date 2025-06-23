@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, RestaurantUser } from '@prisma-client';
 import { PrismaService } from 'modules/prisma/prisma.service';
+import { insensitiveContainSearchQuery } from 'shared/queries';
 import { parsePaginationQuery } from 'shared/utils';
 import {
 	CreateRestaurantUserInput,
 	GetRestaurantUsersQuery,
 	UpdateRestaurantUserInput,
 } from '../types';
-import { insensitiveContainSearchQuery } from 'shared/queries';
 
 @Injectable()
 export class RestaurantUserRepository {

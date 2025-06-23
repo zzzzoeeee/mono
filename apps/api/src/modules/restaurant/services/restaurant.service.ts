@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Restaurant, RestaurantUserRole } from '@prisma-client';
-import { RestaurantRepository } from '../repositories/restaurant.repository';
 import { c } from '@repo/contracts';
 import { TsRestException } from '@ts-rest/nest';
+import { RestaurantRepository } from '../repositories/restaurant.repository';
 import {
 	CreateRestaurantInput,
 	GetRestaurantsQuery,

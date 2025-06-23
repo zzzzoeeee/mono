@@ -1,10 +1,10 @@
 import { Controller, Req, UseGuards } from '@nestjs/common';
-import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { c } from '@repo/contracts';
-import { AuthService } from '../services';
-import { LoginAuthGuard } from '../guards';
+import { TsRestException, TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { ReqWithUser } from 'shared/types';
 import { Public } from '../decorators';
+import { LoginAuthGuard } from '../guards';
+import { AuthService } from '../services';
 
 @Controller()
 export class AuthController {
