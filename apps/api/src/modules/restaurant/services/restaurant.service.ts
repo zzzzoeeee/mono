@@ -44,7 +44,7 @@ export class RestaurantService {
 
 	async deleteRestaurant(restaurantId: string): Promise<void> {
 		await this.getRestaurant(restaurantId);
-		await this.restaurantRepository.remove(restaurantId);
+		await this.restaurantRepository.delete(restaurantId);
 	}
 
 	async isUserInRestaurantWithRoles(

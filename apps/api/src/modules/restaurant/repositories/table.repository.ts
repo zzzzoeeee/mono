@@ -14,7 +14,7 @@ import { PrismaService } from 'modules/prisma/prisma.service';
 export class TableRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async createTable(
+	async create(
 		restaurantId: string,
 		data: CreateTableInput,
 	): Promise<Table> {
@@ -27,7 +27,7 @@ export class TableRepository {
 		};
 	}
 
-	async getTableById(
+	async findOne(
 		restaurantId: string,
 		tableId: string,
 	): Promise<Table | null> {
@@ -42,7 +42,7 @@ export class TableRepository {
 			: null;
 	}
 
-	async updateTable(
+	async update(
 		restaurantId: string,
 		tableId: string,
 		data: UpdateTableInput,
@@ -57,7 +57,7 @@ export class TableRepository {
 		};
 	}
 
-	async deleteTable(restaurantId: string, tableId: string): Promise<Table> {
+	async delete(restaurantId: string, tableId: string): Promise<Table> {
 		const table = await this.prisma.table.delete({
 			where: { id: tableId, restaurantId },
 		});
@@ -67,7 +67,7 @@ export class TableRepository {
 		};
 	}
 
-	async getAllTables(
+	async findMany(
 		restaurantId: string,
 		rawQuery: GetTablesQuery,
 	): Promise<Table[]> {

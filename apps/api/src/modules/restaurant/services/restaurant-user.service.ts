@@ -70,7 +70,7 @@ export class RestaurantUserService {
 			await this.ensureNotLastManager(restaurantId, restaurantUserId);
 		}
 
-		return this.restaurantUserRepository.remove(restaurantId, restaurantUserId);
+		return this.restaurantUserRepository.delete(restaurantId, restaurantUserId);
 	}
 
 	async getAllRestaurantUsers(

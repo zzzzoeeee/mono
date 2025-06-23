@@ -82,7 +82,7 @@ export class PricePlanRepository {
 		});
 	}
 
-	async remove(restaurantId: string, pricePlanId: string): Promise<void> {
+	async delete(restaurantId: string, pricePlanId: string): Promise<void> {
 		await this.prisma.pricePlan.delete({
 			where: { id: pricePlanId, restaurantId },
 		});

@@ -37,6 +37,6 @@ export class PricePlanService {
 		restaurantId: string,
 		pricePlanId: string,
 	): Promise<void> {
-		await this.pricePlanRepository.remove(restaurantId, pricePlanId);
+		await this.pricePlanRepository.delete(restaurantId, pricePlanId);
 	}
 }

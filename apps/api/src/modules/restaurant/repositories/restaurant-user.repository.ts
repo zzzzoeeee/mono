@@ -95,7 +95,7 @@ export class RestaurantUserRepository {
 		});
 	}
 
-	async remove(
+	async delete(
 		restaurantId: string,
 		restaurantUserId: string,
 	): Promise<RestaurantUser> {

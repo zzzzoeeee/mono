@@ -56,7 +56,7 @@ export class TableController {
 	@TsRestHandler(c.tables.getTable)
 	async getTable() {
 		return tsRestHandler(c.tables.getTable, async ({ params }) => {
-			const table = await this.tableService.getTableById(
+			const table = await this.tableService.getTable(
 				params.restaurantId,
 				params.id,
 			);
@@ -70,7 +70,7 @@ export class TableController {
 	@TsRestHandler(c.tables.getAllTables)
 	async getAllTables() {
 		return tsRestHandler(c.tables.getAllTables, async ({ query, params }) => {
-			const tables = await this.tableService.getAllTables(
+			const tables = await this.tableService.getTables(
 				params.restaurantId,
 				query,
 			);

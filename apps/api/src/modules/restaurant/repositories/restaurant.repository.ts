@@ -68,7 +68,7 @@ export class RestaurantRepository {
 		});
 	}
 
-	async remove(id: string): Promise<Restaurant> {
+	async delete(id: string): Promise<Restaurant> {
 		return this.prisma.restaurant.delete({
 			where: { id },
 		});

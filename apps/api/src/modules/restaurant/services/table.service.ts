@@ -17,11 +17,11 @@ export class TableService {
 		restaurantId: string,
 		data: CreateTableInput,
 	): Promise<Table> {
-		return this.tableRepository.createTable(restaurantId, data);
+		return this.tableRepository.create(restaurantId, data);
 	}
 
-	async getTableById(restaurantId: string, tableId: string): Promise<Table> {
-		const table = await this.tableRepository.getTableById(
+	async getTable(restaurantId: string, tableId: string): Promise<Table> {
+		const table = await this.tableRepository.findOne(
 			restaurantId,
 			tableId,
 		);
@@ -43,17 +43,17 @@ export class TableService {
 		id: string,
 		data: UpdateTableInput,
 	): Promise<Table> {
-		return this.tableRepository.updateTable(restaurantId, id, data);
+		return this.tableRepository.update(restaurantId, id, data);
 	}
 
 	async deleteTable(restaurantId: string, id: string): Promise<Table> {
-		return this.tableRepository.deleteTable(restaurantId, id);
+		return this.tableRepository.delete(restaurantId, id);
 	}
 
-	async getAllTables(
+	async getTables(
 		restaurantId: string,
 		rawQuery: GetTablesQuery,
 	): Promise<Table[]> {
-		return this.tableRepository.getAllTables(restaurantId, rawQuery);
+		return this.tableRepository.findMany(restaurantId, rawQuery);
 	}
 }
