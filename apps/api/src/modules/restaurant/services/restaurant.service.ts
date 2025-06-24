@@ -38,12 +38,10 @@ export class RestaurantService {
 		restaurantId: string,
 		data: UpdateRestaurantInput,
 	): Promise<Restaurant> {
-		await this.getRestaurant(restaurantId);
 		return this.restaurantRepository.update(restaurantId, data);
 	}
 
 	async deleteRestaurant(restaurantId: string): Promise<void> {
-		await this.getRestaurant(restaurantId);
 		await this.restaurantRepository.delete(restaurantId);
 	}
 
