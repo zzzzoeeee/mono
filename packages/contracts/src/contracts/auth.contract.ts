@@ -1,8 +1,8 @@
+import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { extendZodWithOpenApi } from '@anatine/zod-openapi';
-import { UserSchema } from './user.contract';
 import { securityCookieAuth } from '../shared/openapi-options';
+import { UserSchema } from './user.contract';
 
 extendZodWithOpenApi(z);
 

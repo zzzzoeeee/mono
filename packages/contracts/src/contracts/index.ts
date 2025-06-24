@@ -1,15 +1,15 @@
+import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { extendZodWithOpenApi } from '@anatine/zod-openapi';
-import { restaurantContract } from './restaurant.contract';
-import { tableContract } from './table.contract';
-import { visitContract } from './visit.contract';
-import { pricePlanContract } from './price-plan.contract';
+import { authContract } from './auth.contract';
 import { menuContract } from './menu.contract';
 import { orderContract } from './order.contract';
-import { authContract } from './auth.contract';
-import { userContract } from './user.contract';
+import { pricePlanContract } from './price-plan.contract';
+import { restaurantContract } from './restaurant.contract';
 import { restaurantUserContract } from './restaurant-user.contract';
+import { tableContract } from './table.contract';
+import { userContract } from './user.contract';
+import { visitContract } from './visit.contract';
 
 extendZodWithOpenApi(z);
 

@@ -1,8 +1,8 @@
-import { c } from './contracts';
 import { generateOpenApi } from '@ts-rest/open-api';
 import express from 'express';
-import * as swaggerUi from 'swagger-ui-express';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+import * as swaggerUi from 'swagger-ui-express';
+import { c } from './contracts';
 
 type SecurityRequirementObject = {
 	[name: string]: string[];

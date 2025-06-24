@@ -1,6 +1,6 @@
+import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { basePaginationQuery } from '../shared/queries';
 import { zodBooleanString } from '../shared/utils';
 
