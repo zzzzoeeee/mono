@@ -1,6 +1,6 @@
+import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import { basePaginationQuery } from '../shared/queries';
 
 extendZodWithOpenApi(z);
@@ -15,7 +15,7 @@ const MenuSchema = z.object({
 	name: z.string(),
 	description: z.string().nullable(),
 	image: z.string().nullable(),
-	price: z.number(),
+	price: z.number().min(0),
 	category: MenuCategorySchema,
 	isAvailable: z.boolean(),
 	createdAt: z.date(),
@@ -34,7 +34,7 @@ export const menuContract = c.router(
 				name: z.string(),
 				description: z.string().nullable(),
 				image: z.string().nullable(),
-				price: z.number(),
+				price: z.number().min(0),
 				category: MenuCategorySchema,
 				isAvailable: z.boolean().default(true),
 			}),
@@ -42,7 +42,7 @@ export const menuContract = c.router(
 		},
 		updateMenu: {
 			method: 'PUT',
-			path: '/:id',
+			path: '/:menuId',
 			responses: {
 				200: MenuSchema,
 			},
@@ -50,7 +50,7 @@ export const menuContract = c.router(
 				name: z.string(),
 				description: z.string().nullable(),
 				image: z.string().nullable(),
-				price: z.number(),
+				price: z.number().min(0),
 				category: MenuCategorySchema,
 				isAvailable: z.boolean(),
 			}),
@@ -64,13 +64,15 @@ export const menuContract = c.router(
 			},
 			query: basePaginationQuery.extend({
 				category: MenuCategorySchema.optional(),
-				sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+				sort: z
+					.enum(['name', 'price', 'isAvailable', 'createdAt', 'updatedAt'])
+					.optional(),
 			}),
 			summary: 'Get menu items for a restaurant',
 		},
 		deleteMenu: {
 			method: 'DELETE',
-			path: '/:id',
+			path: '/:menuId',
 			responses: {
 				200: z.object({
 					message: z.string(),

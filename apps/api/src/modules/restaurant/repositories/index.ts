@@ -1,3 +1,4 @@
+export * from './menu.repository';
 export * from './price-plan.repository';
 export * from './restaurant.repository';
 export * from './restaurant-user.repository';
