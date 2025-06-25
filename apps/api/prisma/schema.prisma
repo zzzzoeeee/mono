@@ -55,6 +55,7 @@ model Restaurant {
   tables          Table[]
   pricePlans      PricePlan[]
   restaurantUsers RestaurantUser[]
+  visits          Visit[]
 }
 
 model Menu {
@@ -109,21 +110,23 @@ model PricePlan {
 
 model Visit {
   id            String      @id @default(uuid())
+  restaurantId  String
   tableId       String
   pricePlanId   String
   customerCount Int
   status        VisitStatus @default(USING)
-  startTime     DateTime
-  endTime       DateTime?
+  visitedAt     DateTime
+  departedAt    DateTime?
   duration      Int?
   notes         String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   // Relations
-  table     Table     @relation(fields: [tableId], references: [id])
-  pricePlan PricePlan @relation(fields: [pricePlanId], references: [id])
-  orders    Order[]
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  table      Table      @relation(fields: [tableId], references: [id])
+  pricePlan  PricePlan  @relation(fields: [pricePlanId], references: [id])
+  orders     Order[]
 }
 
 model Order {
