@@ -8,10 +8,14 @@ import {
 	Table,
 	UpdateTableInput,
 } from '../types';
+import { TableValidationService } from './table-validation.service';
 
 @Injectable()
 export class TableService {
-	constructor(private readonly tableRepository: TableRepository) {}
+	constructor(
+		private readonly tableRepository: TableRepository,
+		private readonly tableValidationService: TableValidationService,
+	) {}
 
 	async createTable(
 		restaurantId: string,
@@ -40,10 +44,20 @@ export class TableService {
 		id: string,
 		data: UpdateTableInput,
 	): Promise<Table> {
+		if (data.isActive === false) {
+			await this.tableValidationService.validateTableCanBeDeactivated(
+				restaurantId,
+				id,
+			);
+		}
 		return this.tableRepository.update(restaurantId, id, data);
 	}
 
 	async deleteTable(restaurantId: string, id: string): Promise<Table> {
+		await this.tableValidationService.validateTableCanBeDeactivated(
+			restaurantId,
+			id,
+		);
 		return this.tableRepository.delete(restaurantId, id);
 	}
 

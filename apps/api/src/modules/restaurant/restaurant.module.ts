@@ -21,6 +21,7 @@ import {
 	RestaurantService,
 	RestaurantUserService,
 	TableService,
+	TableValidationService,
 	VisitService,
 } from './services';
 
@@ -47,6 +48,7 @@ import {
 		MenuRepository,
 		VisitService,
 		VisitRepository,
+		TableValidationService,
 	],
 	exports: [],
 })

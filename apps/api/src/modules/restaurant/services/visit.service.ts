@@ -8,35 +8,27 @@ import {
 	UpdateVisitInput,
 	Visit,
 } from '../types';
+import { TableValidationService } from './table-validation.service';
 
 @Injectable()
 export class VisitService {
-	constructor(private readonly visitRepository: VisitRepository) {}
-
-	private async ensureNoOtherVisitIsUsingTable(
-		restaurantId: string,
-		tableId: string,
-	) {
-		const visit = await this.visitRepository.findAll(restaurantId, {
-			tableId,
-			status: 'USING',
-		});
-		if (visit.length > 0) {
-			throw new TsRestException(c.visits.createVisit, {
-				body: {
-					message: `Table ${tableId} is already in use`,
-				},
-				status: 400,
-			});
-		}
-		return visit;
-	}
+	constructor(
+		private readonly visitRepository: VisitRepository,
+		private readonly tableValidationService: TableValidationService,
+	) {}
 
 	async createVisit(
 		restaurantId: string,
 		data: CreateVisitInput,
 	): Promise<Visit> {
-		await this.ensureNoOtherVisitIsUsingTable(restaurantId, data.tableId);
+		await this.tableValidationService.validateTableIsActive(
+			restaurantId,
+			data.tableId,
+		);
+		await this.tableValidationService.ensureNoOtherVisitIsUsingTable(
+			restaurantId,
+			data.tableId,
+		);
 		return this.visitRepository.create(restaurantId, data);
 	}
 
@@ -45,6 +37,27 @@ export class VisitService {
 		visitId: string,
 		data: UpdateVisitInput,
 	): Promise<Visit> {
+		const visit = await this.visitRepository.findOne(restaurantId, visitId);
+		if (!visit) {
+			throw new TsRestException(c.visits.updateVisit, {
+				body: {
+					message: `Visit with ID ${visitId} not found`,
+				},
+				status: 404,
+			});
+		}
+
+		if (data.tableId && visit.tableId !== data.tableId) {
+			await this.tableValidationService.validateTableIsActive(
+				restaurantId,
+				data.tableId,
+			);
+			await this.tableValidationService.ensureNoOtherVisitIsUsingTable(
+				restaurantId,
+				data.tableId,
+			);
+		}
+
 		return this.visitRepository.update(restaurantId, visitId, data);
 	}
 
