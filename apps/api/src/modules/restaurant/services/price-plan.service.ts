@@ -1,15 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PricePlan } from '@prisma-client';
+import { commonResponses } from '@repo/contracts';
+import z from 'zod';
 import { PricePlanRepository } from '../repositories/price-plan.repository';
 import {
 	CreatePricePlanInput,
 	GetPricePlansQuery,
 	UpdatePricePlanInput,
 } from '../types/price-plan.type';
+import { PricePlanValidationService } from './price-plan-validation.service';
 
 @Injectable()
 export class PricePlanService {
-	constructor(private readonly pricePlanRepository: PricePlanRepository) {}
+	constructor(
+		private readonly pricePlanRepository: PricePlanRepository,
+		private readonly pricePlanValidationService: PricePlanValidationService,
+	) {}
 
 	async createPricePlan(
 		restaurantId: string,
@@ -23,6 +29,15 @@ export class PricePlanService {
 		pricePlanId: string,
 		data: UpdatePricePlanInput,
 	): Promise<PricePlan> {
+		const pricePlan = await this.getPricePlan(restaurantId, pricePlanId);
+
+		if (pricePlan.isActive && data.isActive === false) {
+			await this.pricePlanValidationService.validatePricePlanCanBeDeActivate(
+				restaurantId,
+				pricePlan,
+			);
+		}
+
 		return this.pricePlanRepository.update(restaurantId, pricePlanId, data);
 	}
 
@@ -38,5 +53,25 @@ export class PricePlanService {
 		pricePlanId: string,
 	): Promise<void> {
 		await this.pricePlanRepository.delete(restaurantId, pricePlanId);
+	}
+
+	async getPricePlan(
+		restaurantId: string,
+		pricePlanId: string,
+	): Promise<PricePlan> {
+		const pricePlan = await this.pricePlanRepository.findOne(
+			restaurantId,
+			pricePlanId,
+		);
+
+		if (!pricePlan) {
+			const response: z.infer<(typeof commonResponses)[404]> = {
+				message: `Price plan with ID ${pricePlanId} not found`,
+				statusCode: 404,
+			};
+			throw new BadRequestException(response);
+		}
+
+		return pricePlan;
 	}
 }

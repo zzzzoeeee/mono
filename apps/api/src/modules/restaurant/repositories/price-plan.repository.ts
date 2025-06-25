@@ -82,6 +82,15 @@ export class PricePlanRepository {
 		});
 	}
 
+	async findOne(
+		restaurantId: string,
+		pricePlanId: string,
+	): Promise<PricePlan | null> {
+		return this.prisma.pricePlan.findUnique({
+			where: { id: pricePlanId, restaurantId },
+		});
+	}
+
 	async delete(restaurantId: string, pricePlanId: string): Promise<void> {
 		await this.prisma.pricePlan.delete({
 			where: { id: pricePlanId, restaurantId },

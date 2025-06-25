@@ -18,6 +18,7 @@ import {
 import {
 	MenuService,
 	PricePlanService,
+	PricePlanValidationService,
 	RestaurantService,
 	RestaurantUserService,
 	TableService,
@@ -49,6 +50,7 @@ import {
 		VisitService,
 		VisitRepository,
 		TableValidationService,
+		PricePlanValidationService,
 	],
 	exports: [],
 })

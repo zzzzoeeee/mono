@@ -35,7 +35,7 @@ export class PricePlanController {
 			async ({ body, params }) => {
 				const pricePlan = await this.pricePlanService.updatePricePlan(
 					params.restaurantId,
-					params.id,
+					params.pricePlanId,
 					body,
 				);
 				return {
@@ -63,12 +63,26 @@ export class PricePlanController {
 		);
 	}
 
+	@TsRestHandler(c.pricePlans.getPricePlan)
+	async getPricePlan() {
+		return tsRestHandler(c.pricePlans.getPricePlan, async ({ params }) => {
+			const pricePlan = await this.pricePlanService.getPricePlan(
+				params.restaurantId,
+				params.pricePlanId,
+			);
+			return {
+				status: 200,
+				body: pricePlan,
+			};
+		});
+	}
+
 	@TsRestHandler(c.pricePlans.deletePricePlan)
 	async deletePricePlan() {
 		return tsRestHandler(c.pricePlans.deletePricePlan, async ({ params }) => {
 			await this.pricePlanService.deletePricePlan(
 				params.restaurantId,
-				params.id,
+				params.pricePlanId,
 			);
 			return {
 				status: 200,

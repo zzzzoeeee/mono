@@ -37,7 +37,7 @@ export const pricePlanContract = c.router(
 		},
 		updatePricePlan: {
 			method: 'PUT',
-			path: '/:id',
+			path: '/:pricePlanId',
 			responses: {
 				200: PricePlanSchema,
 			},
@@ -64,9 +64,17 @@ export const pricePlanContract = c.router(
 			}),
 			summary: 'Get price plans for a restaurant',
 		},
+		getPricePlan: {
+			method: 'GET',
+			path: '/:pricePlanId',
+			responses: {
+				200: PricePlanSchema,
+			},
+			summary: 'Get a price plan by id',
+		},
 		deletePricePlan: {
 			method: 'DELETE',
-			path: '/:id',
+			path: '/:pricePlanId',
 			responses: {
 				200: z.object({
 					message: z.string(),

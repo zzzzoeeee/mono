@@ -8,6 +8,7 @@ import {
 	UpdateVisitInput,
 	Visit,
 } from '../types';
+import { PricePlanValidationService } from './price-plan-validation.service';
 import { TableValidationService } from './table-validation.service';
 
 @Injectable()
@@ -15,20 +16,44 @@ export class VisitService {
 	constructor(
 		private readonly visitRepository: VisitRepository,
 		private readonly tableValidationService: TableValidationService,
+		private readonly pricePlanValidationService: PricePlanValidationService,
 	) {}
 
 	async createVisit(
 		restaurantId: string,
 		data: CreateVisitInput,
 	): Promise<Visit> {
-		await this.tableValidationService.validateTableIsActive(
-			restaurantId,
-			data.tableId,
-		);
-		await this.tableValidationService.ensureNoOtherVisitIsUsingTable(
-			restaurantId,
-			data.tableId,
-		);
+		const results = await Promise.allSettled([
+			this.tableValidationService.validateTableIsActive(
+				restaurantId,
+				data.tableId,
+			),
+			this.tableValidationService.ensureNoOtherVisitIsUsingTable(
+				restaurantId,
+				data.tableId,
+			),
+			this.pricePlanValidationService.validatePricePlanIsActive(
+				restaurantId,
+				data.pricePlanId,
+			),
+		]);
+
+		const errors = results.filter((result) => result.status === 'rejected');
+
+		if (errors.length > 0) {
+			throw new TsRestException(c.visits.createVisit, {
+				body: {
+					message: 'Failed to create visit',
+					detail: {
+						reasons: errors.map(
+							(error) => error.reason?.message ?? 'Unknown error',
+						),
+					},
+				},
+				status: 400,
+			});
+		}
+
 		return this.visitRepository.create(restaurantId, data);
 	}
 
@@ -55,6 +80,13 @@ export class VisitService {
 			await this.tableValidationService.ensureNoOtherVisitIsUsingTable(
 				restaurantId,
 				data.tableId,
+			);
+		}
+
+		if (data.pricePlanId && visit.pricePlanId !== data.pricePlanId) {
+			await this.pricePlanValidationService.validatePricePlanIsActive(
+				restaurantId,
+				data.pricePlanId,
 			);
 		}
 
