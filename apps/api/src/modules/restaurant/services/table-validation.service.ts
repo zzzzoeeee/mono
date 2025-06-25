@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { c } from '@repo/contracts';
-import { TsRestException } from '@ts-rest/nest';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { commonResponses } from '@repo/contracts';
+import z from 'zod';
 import { VisitRepository } from '../repositories';
 import { TableRepository } from '../repositories/table.repository';
 
@@ -21,12 +21,12 @@ export class TableValidationService {
 		});
 
 		if (activeVisits.length > 0) {
-			throw new TsRestException(c.tables.updateTable, {
-				body: {
-					message: 'Cannot deactivate or delete a table with active visits',
-				},
-				status: 400,
-			});
+			const response: z.infer<(typeof commonResponses)[400]> = {
+				message: 'Cannot deactivate or delete a table with active visits',
+				statusCode: 400,
+				detail: null,
+			};
+			throw new BadRequestException(response);
 		}
 	}
 
@@ -37,21 +37,20 @@ export class TableValidationService {
 		const table = await this.tableRepository.findOne(restaurantId, tableId);
 
 		if (!table) {
-			throw new TsRestException(c.tables.getTable, {
-				body: {
-					message: `Table with ID ${tableId} not found`,
-				},
-				status: 404,
-			});
+			const response: z.infer<(typeof commonResponses)[404]> = {
+				message: `Table with ID ${tableId} not found`,
+				statusCode: 404,
+			};
+			throw new BadRequestException(response);
 		}
 
 		if (!table.isActive) {
-			throw new TsRestException(c.visits.createVisit, {
-				body: {
-					message: `Table ${tableId} is not active`,
-				},
-				status: 400,
-			});
+			const response: z.infer<(typeof commonResponses)[400]> = {
+				message: `Table ${tableId} is not active`,
+				statusCode: 400,
+				detail: null,
+			};
+			throw new BadRequestException(response);
 		}
 	}
 
@@ -65,12 +64,12 @@ export class TableValidationService {
 		});
 
 		if (visits.length > 0) {
-			throw new TsRestException(c.visits.createVisit, {
-				body: {
-					message: `Table ${tableId} is already in use`,
-				},
-				status: 400,
-			});
+			const response: z.infer<(typeof commonResponses)[400]> = {
+				message: `Table ${tableId} is already in use`,
+				statusCode: 400,
+				detail: null,
+			};
+			throw new BadRequestException(response);
 		}
 	}
 }
