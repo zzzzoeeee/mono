@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Restaurant, RestaurantUserRole } from '@prisma-client';
 import { c } from '@repo/contracts';
 import { TsRestException } from '@ts-rest/nest';
+import { User } from 'modules/user/types';
 import { RestaurantRepository } from '../repositories/restaurant.repository';
 import {
 	CreateRestaurantInput,
@@ -17,7 +18,15 @@ export class RestaurantService {
 		return this.restaurantRepository.create(data);
 	}
 
-	async getAllRestaurants(query: GetRestaurantsQuery): Promise<Restaurant[]> {
+	async getAllRestaurants(
+		actor: User,
+		rawQuery: GetRestaurantsQuery,
+	): Promise<Restaurant[]> {
+		const query = {
+			...rawQuery,
+			...(actor.role === 'ADMIN' ? {} : { userId: actor.id }),
+		};
+
 		return this.restaurantRepository.findAll(query);
 	}
 

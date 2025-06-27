@@ -64,6 +64,7 @@ export const restaurantContract = c.router({
 		path: '/restaurants',
 		query: basePaginationQuery.extend({
 			sort: z.enum(['name', 'createdAt', 'updatedAt']).optional(),
+			userId: z.string().optional(),
 		}),
 		responses: {
 			200: z.array(RestaurantSchema),

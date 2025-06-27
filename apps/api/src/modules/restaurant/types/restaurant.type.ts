@@ -20,4 +20,5 @@ export type UpdateRestaurantInput = Partial<CreateRestaurantInput>;
 
 export type GetRestaurantsQuery = basePaginationQuery & {
 	sort?: 'name' | 'createdAt' | 'updatedAt';
+	userId?: string;
 };

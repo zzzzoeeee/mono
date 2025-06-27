@@ -23,6 +23,19 @@ export class RestaurantRepository {
 	async findAll(rawQuery: GetRestaurantsQuery): Promise<Restaurant[]> {
 		const query = parsePaginationQuery(rawQuery);
 
+		const whereOptions: Prisma.RestaurantWhereInput = {
+			name: insensitiveContainSearchQuery(query.search),
+			...(query.userId
+				? {
+						restaurantUsers: {
+							some: {
+								userId: query.userId,
+							},
+						},
+					}
+				: {}),
+		};
+
 		const orderByOptions: Record<
 			NonNullable<typeof query.sort>,
 			Prisma.Enumerable<Prisma.RestaurantOrderByWithRelationInput>
@@ -46,9 +59,7 @@ export class RestaurantRepository {
 		const orderBy = orderByOptions[query.sort || 'name'];
 
 		return this.prisma.restaurant.findMany({
-			where: {
-				name: insensitiveContainSearchQuery(query.search),
-			},
+			where: whereOptions,
 			orderBy,
 			take: query.limit,
 			skip: query.skip,

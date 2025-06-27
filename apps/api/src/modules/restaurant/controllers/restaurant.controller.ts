@@ -1,6 +1,8 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { c } from '@repo/contracts';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import { ReqWithUser } from 'shared/types';
+import { getUserOrThrow } from 'shared/utils';
 import { RestaurantUserRoles, Roles } from '../../auth/decorators';
 import { RestaurantUserGuard, RolesGuard } from '../../auth/guards';
 import { RestaurantService } from '../services/restaurant.service';
@@ -26,10 +28,14 @@ export class RestaurantController {
 
 	@TsRestHandler(c.restaurants.getAllRestaurants)
 	@UseGuards(RolesGuard)
-	@Roles('ADMIN')
-	async getAllRestaurants() {
+	@Roles('ADMIN', 'USER')
+	async getAllRestaurants(@Req() req: ReqWithUser) {
 		return tsRestHandler(c.restaurants.getAllRestaurants, async ({ query }) => {
-			const restaurants = await this.restaurantService.getAllRestaurants(query);
+			const user = getUserOrThrow(req, c.restaurants.getAllRestaurants);
+			const restaurants = await this.restaurantService.getAllRestaurants(
+				user,
+				query,
+			);
 			return {
 				status: 200,
 				body: restaurants,
