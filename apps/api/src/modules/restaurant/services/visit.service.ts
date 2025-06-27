@@ -8,15 +8,13 @@ import {
 	UpdateVisitInput,
 	Visit,
 } from '../types';
-import { PricePlanValidationService } from './price-plan-validation.service';
-import { TableValidationService } from './table-validation.service';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class VisitService {
 	constructor(
 		private readonly visitRepository: VisitRepository,
-		private readonly tableValidationService: TableValidationService,
-		private readonly pricePlanValidationService: PricePlanValidationService,
+		private readonly commonService: CommonService,
 	) {}
 
 	async createVisit(
@@ -24,15 +22,12 @@ export class VisitService {
 		data: CreateVisitInput,
 	): Promise<Visit> {
 		const results = await Promise.allSettled([
-			this.tableValidationService.validateTableIsActive(
+			this.commonService.validateTableIsActive(restaurantId, data.tableId),
+			this.commonService.ensureNoOtherVisitIsUsingTable(
 				restaurantId,
 				data.tableId,
 			),
-			this.tableValidationService.ensureNoOtherVisitIsUsingTable(
-				restaurantId,
-				data.tableId,
-			),
-			this.pricePlanValidationService.validatePricePlanIsActive(
+			this.commonService.validatePricePlanIsActive(
 				restaurantId,
 				data.pricePlanId,
 			),
@@ -73,18 +68,18 @@ export class VisitService {
 		}
 
 		if (data.tableId && visit.tableId !== data.tableId) {
-			await this.tableValidationService.validateTableIsActive(
+			await this.commonService.validateTableIsActive(
 				restaurantId,
 				data.tableId,
 			);
-			await this.tableValidationService.ensureNoOtherVisitIsUsingTable(
+			await this.commonService.ensureNoOtherVisitIsUsingTable(
 				restaurantId,
 				data.tableId,
 			);
 		}
 
 		if (data.pricePlanId && visit.pricePlanId !== data.pricePlanId) {
-			await this.pricePlanValidationService.validatePricePlanIsActive(
+			await this.commonService.validatePricePlanIsActive(
 				restaurantId,
 				data.pricePlanId,
 			);

@@ -8,13 +8,13 @@ import {
 	GetPricePlansQuery,
 	UpdatePricePlanInput,
 } from '../types/price-plan.type';
-import { PricePlanValidationService } from './price-plan-validation.service';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class PricePlanService {
 	constructor(
 		private readonly pricePlanRepository: PricePlanRepository,
-		private readonly pricePlanValidationService: PricePlanValidationService,
+		private readonly commonService: CommonService,
 	) {}
 
 	async createPricePlan(
@@ -32,7 +32,7 @@ export class PricePlanService {
 		const pricePlan = await this.getPricePlan(restaurantId, pricePlanId);
 
 		if (pricePlan.isActive && data.isActive === false) {
-			await this.pricePlanValidationService.validatePricePlanCanBeDeActivate(
+			await this.commonService.validatePricePlanCanBeDeActivate(
 				restaurantId,
 				pricePlan,
 			);

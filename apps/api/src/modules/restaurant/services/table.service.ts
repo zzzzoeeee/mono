@@ -8,13 +8,13 @@ import {
 	Table,
 	UpdateTableInput,
 } from '../types';
-import { TableValidationService } from './table-validation.service';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class TableService {
 	constructor(
 		private readonly tableRepository: TableRepository,
-		private readonly tableValidationService: TableValidationService,
+		private readonly commonService: CommonService,
 	) {}
 
 	async createTable(
@@ -45,19 +45,13 @@ export class TableService {
 		data: UpdateTableInput,
 	): Promise<Table> {
 		if (data.isActive === false) {
-			await this.tableValidationService.validateTableCanBeDeactivated(
-				restaurantId,
-				id,
-			);
+			await this.commonService.validateTableCanBeDeactivated(restaurantId, id);
 		}
 		return this.tableRepository.update(restaurantId, id, data);
 	}
 
 	async deleteTable(restaurantId: string, id: string): Promise<Table> {
-		await this.tableValidationService.validateTableCanBeDeactivated(
-			restaurantId,
-			id,
-		);
+		await this.commonService.validateTableCanBeDeactivated(restaurantId, id);
 		return this.tableRepository.delete(restaurantId, id);
 	}
 

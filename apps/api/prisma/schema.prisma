@@ -56,6 +56,7 @@ model Restaurant {
   pricePlans      PricePlan[]
   restaurantUsers RestaurantUser[]
   visits          Visit[]
+  orders          Order[]
 }
 
 model Menu {
@@ -130,16 +131,18 @@ model Visit {
 }
 
 model Order {
-  id        String      @id @default(uuid())
-  visitId   String
-  status    OrderStatus @default(PENDING)
-  notes     String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id           String      @id @default(uuid())
+  restaurantId String
+  visitId      String
+  status       OrderStatus @default(PENDING)
+  note         String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   // Relations
-  visit Visit       @relation(fields: [visitId], references: [id])
-  items OrderItem[]
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id])
+  visit      Visit       @relation(fields: [visitId], references: [id])
+  items      OrderItem[]
 }
 
 model OrderItem {
@@ -148,7 +151,7 @@ model OrderItem {
   menuId   String
   quantity Int     @default(1)
   price    Float
-  notes    String?
+  note     String?
 
   // Relations
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)

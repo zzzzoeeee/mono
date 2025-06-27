@@ -90,4 +90,15 @@ export class MenuRepository {
 			where: { id: menuId, restaurantId },
 		});
 	}
+
+	async findAllByIds(restaurantId: string, menuIds: string[]): Promise<Menu[]> {
+		return this.prisma.menu.findMany({
+			where: {
+				restaurantId,
+				id: {
+					in: menuIds,
+				},
+			},
+		});
+	}
 }

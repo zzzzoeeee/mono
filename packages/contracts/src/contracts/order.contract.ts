@@ -12,7 +12,7 @@ const OrderStatus = z.enum(['PENDING', 'PREPARING', 'COMPLETED', 'CANCELLED']);
 const OrderSchema = z.object({
 	id: z.string(),
 	visitId: z.string(),
-	notes: z.string().nullable(),
+	note: z.string().nullable(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 	status: OrderStatus,
@@ -22,7 +22,7 @@ const OrderSchema = z.object({
 			menuId: z.string(),
 			quantity: z.number(),
 			price: z.number(),
-			notes: z.string().nullable(),
+			note: z.string().nullable(),
 		}),
 	),
 });
@@ -35,42 +35,38 @@ export const orderContract = c.router(
 			responses: {
 				201: OrderSchema,
 			},
-			body: z.object({
-				visitId: z.string(),
-				notes: z.string().nullable(),
-				items: z.array(
-					z.object({
-						menuId: z.string(),
-						quantity: z.number().default(1),
-						notes: z.string().nullable(),
-					}),
+			body: z
+				.object({
+					visitId: z.string(),
+					note: z.string().nullable(),
+					items: z
+						.array(
+							z.object({
+								menuId: z.string(),
+								quantity: z.number().min(1).max(10).default(1),
+								note: z.string().nullable(),
+							}),
+						)
+						.min(1)
+						.max(10),
+				})
+				.refine(
+					(val) => {
+						const items = val.items.map(
+							(item) => `${item.menuId}-${item.note}`,
+						);
+						const uniqueItems = new Set(items);
+						return uniqueItems.size === items.length;
+					},
+					{
+						message: 'Item with the same menuId and note must be unique',
+					},
 				),
-			}),
 			summary: 'Create a new order',
-		},
-		updateOrder: {
-			method: 'PUT',
-			path: '/:id',
-			responses: {
-				200: OrderSchema,
-			},
-			body: z.object({
-				visitId: z.string(),
-				notes: z.string().nullable(),
-				status: OrderStatus,
-				items: z.array(
-					z.object({
-						menuId: z.string(),
-						quantity: z.number().default(1),
-						notes: z.string().nullable(),
-					}),
-				),
-			}),
-			summary: 'Update an order by id',
 		},
 		deleteOrder: {
 			method: 'DELETE',
-			path: '/:id',
+			path: '/:orderId',
 			responses: {
 				200: z.object({
 					message: z.string(),
@@ -93,11 +89,22 @@ export const orderContract = c.router(
 		},
 		getOrder: {
 			method: 'GET',
-			path: '/:id',
+			path: '/:orderId',
 			responses: {
 				200: OrderSchema,
 			},
 			summary: 'Get an order by id',
+		},
+		updateOrderStatus: {
+			method: 'PUT',
+			path: '/:orderId/status',
+			responses: {
+				200: OrderSchema,
+			},
+			body: z.object({
+				status: OrderStatus,
+			}),
+			summary: 'Update an order status by id',
 		},
 	},
 	{

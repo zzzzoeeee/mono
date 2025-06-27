@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
 	MenuController,
+	OrderController,
 	PricePlanController,
 	RestaurantController,
 	RestaurantUserController,
@@ -9,6 +10,7 @@ import {
 } from './controllers';
 import {
 	MenuRepository,
+	OrderRepository,
 	PricePlanRepository,
 	RestaurantRepository,
 	RestaurantUserRepository,
@@ -16,13 +18,13 @@ import {
 	VisitRepository,
 } from './repositories';
 import {
+	CommonService,
 	MenuService,
+	OrderService,
 	PricePlanService,
-	PricePlanValidationService,
 	RestaurantService,
 	RestaurantUserService,
 	TableService,
-	TableValidationService,
 	VisitService,
 } from './services';
 
@@ -35,6 +37,7 @@ import {
 		TableController,
 		MenuController,
 		VisitController,
+		OrderController,
 	],
 	providers: [
 		RestaurantService,
@@ -49,8 +52,9 @@ import {
 		MenuRepository,
 		VisitService,
 		VisitRepository,
-		TableValidationService,
-		PricePlanValidationService,
+		CommonService,
+		OrderService,
+		OrderRepository,
 	],
 	exports: [],
 })
