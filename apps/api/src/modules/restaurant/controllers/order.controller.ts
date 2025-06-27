@@ -7,7 +7,7 @@ import { OrderService } from '../services';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)
-@RestaurantUserRoles('MANAGER')
+@RestaurantUserRoles('MANAGER', 'STAFF')
 export class OrderController {
 	constructor(private readonly orderService: OrderService) {}
 

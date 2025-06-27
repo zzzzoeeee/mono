@@ -7,7 +7,7 @@ import { VisitService } from '../services';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)
-@RestaurantUserRoles('MANAGER')
+@RestaurantUserRoles('MANAGER', 'STAFF')
 export class VisitController {
 	constructor(private readonly visitService: VisitService) {}
 

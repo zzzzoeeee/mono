@@ -8,6 +8,7 @@ import { PricePlanService } from '../services';
 @Controller()
 @UseGuards(RestaurantUserGuard)
 @RestaurantUserRoles('MANAGER')
+@RestaurantUserRoles('STAFF')
 export class PricePlanController {
 	constructor(private readonly pricePlanService: PricePlanService) {}
 

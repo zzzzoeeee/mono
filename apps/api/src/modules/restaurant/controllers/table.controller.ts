@@ -7,7 +7,7 @@ import { TableService } from '../services';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)
-@RestaurantUserRoles('MANAGER')
+@RestaurantUserRoles('MANAGER', 'STAFF')
 export class TableController {
 	constructor(private readonly tableService: TableService) {}
 

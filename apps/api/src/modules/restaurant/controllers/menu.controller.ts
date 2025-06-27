@@ -7,7 +7,7 @@ import { MenuService } from '../services/menu.service';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)
-@RestaurantUserRoles('MANAGER')
+@RestaurantUserRoles('MANAGER', 'STAFF')
 export class MenuController {
 	constructor(private readonly menuService: MenuService) {}
 
