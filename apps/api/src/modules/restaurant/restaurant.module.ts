@@ -56,6 +56,6 @@ import {
 		OrderService,
 		OrderRepository,
 	],
-	exports: [],
+	exports: [VisitService],
 })
 export class RestaurantModule {}

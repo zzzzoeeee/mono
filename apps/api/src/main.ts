@@ -1,10 +1,9 @@
 import env from '@config/env';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { PrismaClient } from '@prisma-client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-import { AuthenticatedGuard } from 'modules/auth/guards';
 import * as passport from 'passport';
 import { AppModule } from './app.module';
 
@@ -34,8 +33,6 @@ async function bootstrap() {
 	);
 	app.use(passport.initialize());
 	app.use(passport.session());
-
-	app.useGlobalGuards(new AuthenticatedGuard(app.get(Reflector)));
 
 	await app.listen(env.PORT ?? 3000);
 }
