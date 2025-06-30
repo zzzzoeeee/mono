@@ -29,7 +29,6 @@ export const tableContract = c.router(
 				201: TablesSchema,
 			},
 			body: z.object({
-				restaurantId: z.string(),
 				name: z.string(),
 				capacity: z.number().min(1).max(100),
 				isActive: z.boolean(),
