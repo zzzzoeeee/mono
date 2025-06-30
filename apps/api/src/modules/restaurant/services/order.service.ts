@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { c } from '@repo/contracts';
 import { TsRestException } from '@ts-rest/nest';
+import { User } from 'modules/user/types';
 import { OrderRepository } from '../repositories/order.repository';
 import {
 	CreateOrderInput,
@@ -87,10 +88,20 @@ export class OrderService {
 	}
 
 	async updateOrderStatus(
+		actor: User | undefined,
 		restaurantId: string,
 		orderId: string,
 		status: OrderStatus,
 	): Promise<Order> {
+		if (!actor && status !== 'CANCELLED') {
+			throw new TsRestException(c.orders.updateOrderStatus, {
+				body: {
+					message: 'You are not allowed to update this order',
+				},
+				status: 403,
+			});
+		}
+
 		const order = await this.getOrder(restaurantId, orderId);
 		if (status === 'CANCELLED' && order.status !== 'PENDING') {
 			throw new TsRestException(c.orders.updateOrderStatus, {

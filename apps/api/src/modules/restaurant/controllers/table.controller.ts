@@ -52,6 +52,7 @@ export class TableController {
 	}
 
 	@TsRestHandler(c.tables.getTable)
+	@RestaurantUserRoles('MANAGER', 'STAFF', 'GUEST')
 	async getTable() {
 		return tsRestHandler(c.tables.getTable, async ({ params }) => {
 			const table = await this.tableService.getTable(

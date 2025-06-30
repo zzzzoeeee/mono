@@ -23,6 +23,7 @@ export class MenuController {
 	}
 
 	@TsRestHandler(c.menus.getMenus)
+	@RestaurantUserRoles('MANAGER', 'STAFF', 'GUEST')
 	async getMenus() {
 		return tsRestHandler(c.menus.getMenus, async ({ query, params }) => {
 			const menus = await this.menuService.getMenus(params.restaurantId, query);

@@ -7,8 +7,7 @@ import { PricePlanService } from '../services';
 
 @Controller()
 @UseGuards(RestaurantUserGuard)
-@RestaurantUserRoles('MANAGER')
-@RestaurantUserRoles('STAFF')
+@RestaurantUserRoles('MANAGER', 'STAFF')
 export class PricePlanController {
 	constructor(private readonly pricePlanService: PricePlanService) {}
 
@@ -65,6 +64,7 @@ export class PricePlanController {
 	}
 
 	@TsRestHandler(c.pricePlans.getPricePlan)
+	@RestaurantUserRoles('MANAGER', 'STAFF', 'GUEST')
 	async getPricePlan() {
 		return tsRestHandler(c.pricePlans.getPricePlan, async ({ params }) => {
 			const pricePlan = await this.pricePlanService.getPricePlan(

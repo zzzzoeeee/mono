@@ -66,6 +66,7 @@ export class VisitController {
 	}
 
 	@TsRestHandler(c.visits.getVisit)
+	@RestaurantUserRoles('MANAGER', 'STAFF', 'GUEST')
 	async getVisit() {
 		return tsRestHandler(c.visits.getVisit, async ({ params }) => {
 			const visit = await this.visitService.getVisit(

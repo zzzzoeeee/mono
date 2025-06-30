@@ -13,7 +13,7 @@ export class RestaurantController {
 
 	@TsRestHandler(c.restaurants.getRestaurant)
 	@UseGuards(RestaurantUserGuard)
-	@RestaurantUserRoles('MANAGER', 'STAFF')
+	@RestaurantUserRoles('MANAGER', 'STAFF', 'GUEST')
 	async getRestaurant() {
 		return tsRestHandler(c.restaurants.getRestaurant, async ({ params }) => {
 			const restaurant = await this.restaurantService.getRestaurant(
