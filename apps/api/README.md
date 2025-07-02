@@ -39,11 +39,12 @@ This is the API service for the Mono project, built with NestJS. It provides the
    ```bash
    pnpm install
    ```
-3. Generate Prisma client:
+3. Build contracts package following [Contract README](/packages/contracts/README.md)
+4. Generate Prisma client:
    ```bash
    pnpm db:generate
    ```
-4. Start the development server:
+5. Start the development server:
    ```bash
    pnpm dev
    ```
