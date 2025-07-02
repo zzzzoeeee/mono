@@ -5,6 +5,7 @@ import { authContract } from './auth.contract';
 import { menuContract } from './menu.contract';
 import { orderContract } from './order.contract';
 import { pricePlanContract } from './price-plan.contract';
+import { pricePlanMenuContract } from './price-plan-menu.contract';
 import { restaurantContract } from './restaurant.contract';
 import { restaurantUserContract } from './restaurant-user.contract';
 import { tableContract } from './table.contract';
@@ -87,6 +88,7 @@ export const c = contract.router(
 		restaurants: restaurantContract,
 		menus: menuContract,
 		pricePlans: pricePlanContract,
+		pricePlanMenus: pricePlanMenuContract,
 		tables: tableContract,
 		visits: visitContract,
 		orders: orderContract,

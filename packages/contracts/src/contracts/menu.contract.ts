@@ -9,7 +9,7 @@ const c = initContract();
 
 const MenuCategorySchema = z.enum(['APPETIZER', 'MAIN', 'DESSERT', 'BEVERAGE']);
 
-const MenuSchema = z.object({
+export const MenuSchema = z.object({
 	id: z.string(),
 	restaurantId: z.string(),
 	name: z.string(),

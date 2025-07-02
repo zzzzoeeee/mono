@@ -2,6 +2,7 @@ export * from './common.service';
 export * from './menu.service';
 export * from './order.service';
 export * from './price-plan.service';
+export * from './price-plan-menu.service';
 export * from './restaurant.service';
 export * from './restaurant-user.service';
 export * from './table.service';

@@ -69,8 +69,9 @@ model Menu {
   updatedAt    DateTime     @updatedAt
 
   // Relations
-  restaurant Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  orderItems OrderItem[]
+  restaurant     Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems     OrderItem[]
+  pricePlanMenus PricePlanMenu[]
 
   @@unique([restaurantId, name])
 }
@@ -102,8 +103,24 @@ model PricePlan {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   visits     Visit[]
+  menus      PricePlanMenu[]
+}
+
+model PricePlanMenu {
+  id          String   @id @default(uuid())
+  pricePlanId String
+  menuId      String
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  pricePlan PricePlan @relation(fields: [pricePlanId], references: [id], onDelete: Cascade)
+  menu      Menu      @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@unique([pricePlanId, menuId])
 }
 
 model Visit {
