@@ -1,40 +1,71 @@
-# Turborepo kitchen sink starter
+# Mono - Monorepo Project
 
-This Turborepo starter is maintained by the Turborepo core team.
+<p align="center">
+  <a href="https://nestjs.com/" target="_blank">
+    <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" />
+  </a>
+  <a href="https://turbo.build/repo" target="_blank" style="margin: 0 20px">
+    <img src="https://turbo.build/images/docs/repo/repo-hero-logo-dark.svg" width="120" alt="Turborepo" />
+  </a>
+</p>
 
-This example also shows how to use [Workspace Configurations](https://turborepo.com/docs/core-concepts/monorepos/configuring-workspaces).
+<p align="center">
+  <a href="https://nestjs.com/"><img alt="NestJS" src="https://img.shields.io/badge/Built_with-Nestjs-E0234E?style=flat&logo=nestjs&logoColor=white">
+  </a>
+  <a href="https://biomejs.dev"><img alt="Biome" src="https://img.shields.io/badge/Formated_with-Biome-60a5fa?style=flat&logo=biome"></a>
+  <a href="https://prisma.io/"><img alt="Prisma" src="https://img.shields.io/badge/Powered_by_-Prisma-3982CE?style=flat&logo=prisma&logoColor=white">
+  </a>
+</p>
 
-## Using this example
+## Project Overview
 
-Run the following command:
+Mono is a monorepo project demonstrating full-stack application development.
 
-```sh
-npx create-turbo@latest -e kitchen-sink
-```
+## 🚀 Completed Components
 
-## What's inside?
+### API Service
 
-This Turborepo includes the following packages and apps:
+A robust NestJS-based API service with the following features:
 
-### Apps and Packages
+- RESTful API endpoints
+- Authentication & Authorization
+- Database integration with Prisma ORM
+- Input validation
+- Comprehensive error handling
+- Environment-based configuration
 
-- `api`: an [Express](https://expressjs.com/) server
-- `storefront`: a [Next.js](https://nextjs.org/) app
-- `admin`: a [Vite](https://vitejs.dev/) single page app
-- `blog`: a [Remix](https://remix.run/) blog
-- `@repo/eslint-config`: ESLint configurations used throughout the monorepo
-- `@repo/jest-presets`: Jest configurations
-- `@repo/logger`: isomorphic logger (a small wrapper around console.log)
-- `@repo/ui`: a dummy React UI library (which contains `<CounterButton>` and `<Link>` components)
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
+📁 [View API Documentation](/apps/api/README.md)
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 🛠️ Development Setup
 
-### Utilities
+### Prerequisites
 
-This Turborepo has some additional tools already setup for you:
+- Node.js (v18+)
+- pnpm (v8+)
+- PostgreSQL (v15+)
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+### Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+3. Set up environment variables (copy from .env.example) and fill in the values in each service's .env file
+4. Start all development applications:
+   ```bash
+   pnpm dev
+   ```
+5. Each application will run on a different port:
+   - API: http://localhost:3000
+   - Admin: http://localhost:3001
+   - Storefront: http://localhost:3002
+
+## 🏗️ Future Components (Planned)
+
+- Storefront
+- Admin Console
+
+## 🛡️ License
+
+This project is [MIT licensed](LICENSE).

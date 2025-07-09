@@ -1,5 +1,5 @@
 {
-	"name": "kitchen-sink",
+	"name": "mono",
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
@@ -11,14 +11,15 @@
 		"check-types": "turbo run check-types"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"turbo": "^2.5.3"
+		"@biomejs/biome": "2.0.4",
+		"lefthook": "^1.11.14",
+		"turbo": "^2.5.4"
 	},
 	"packageManager": "pnpm@8.15.6",
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
-		"@repo/typescript-config": "workspace:^"
+		"@repo/contracts": "workspace:^"
 	}
 }
