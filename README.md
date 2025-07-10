@@ -52,11 +52,15 @@ A robust NestJS-based API service with the following features:
    pnpm install
    ```
 3. Set up environment variables (copy from .env.example) and fill in the values in each service's .env file
-4. Start all development applications:
+4. (Optional) Seed the database with mock data:
+   ```bash
+   pnpm --prefix ./apps/api db:seed
+   ```
+5. Start all development applications:
    ```bash
    pnpm dev
    ```
-5. Each application will run on a different port:
+6. Each application will run on a different port:
    - API: http://localhost:3000
    - Admin: http://localhost:3001
    - Storefront: http://localhost:3002
