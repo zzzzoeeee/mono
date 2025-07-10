@@ -1,6 +1,6 @@
 {
 	"extends": "@repo/typescript-config/nestjs.json",
-	"include": ["src"],
+	"include": ["src", "prisma"],
 	"compilerOptions": {
 		"baseUrl": "./src",
 		"outDir": "./dist",
