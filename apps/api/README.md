@@ -25,6 +25,7 @@ This is the API service for the Mono project, built with NestJS. It provides the
 - Database integration
 - Input validation
 - Error handling
+- Database mock data seeding
 
 ## Prerequisites
 
@@ -44,10 +45,15 @@ This is the API service for the Mono project, built with NestJS. It provides the
    ```bash
    pnpm db:generate
    ```
-5. Start the development server:
+5. (Optional) Seed the database with mock data:
+   ```bash
+   pnpm db:seed
+   ```
+6. Start the development server:
    ```bash
    pnpm dev
    ```
+
 
 The API will be available at `http://localhost:3000` by default.
 
