@@ -25,10 +25,80 @@ const randomElements = <T>(arr: T[], count: number): T[] => {
 };
 
 // Data generators
+const DEFAULT_PASSWORD_HASH =
+	'$argon2id$v=19$m=65536,t=3,p=4$X40vXI3KUvJojm7XmEseag$kQ5EyaFjUV9D7L+dzsWhO/Ldy+eILhTduw1iP3shhqw'; // hashed 'password123'
+
+const SEED_CONFIG = {
+	USER_COUNTS: {
+		ADMIN: 2,
+		REGULAR: 100,
+	},
+	RESTAURANT_COUNT: 3,
+	RESTAURANT_USER_COUNTS: {
+		MIN: 5,
+		MAX: 20,
+		MANAGER_MIN: 1,
+		MANAGER_MAX: 2,
+	},
+	MENU_COUNTS: {
+		MIN: 20,
+		MAX: 100,
+	},
+	TABLE_COUNTS: {
+		MIN: 4,
+		MAX: 20,
+	},
+	PRICE_PLAN_COUNTS: {
+		MIN: 2,
+		MAX: 5,
+	},
+	VISIT_COUNTS: {
+		MIN: 10,
+		MAX: 100,
+	},
+	ORDER_COUNTS: {
+		MIN: 1,
+		MAX: 5,
+	},
+	ORDER_ITEM_COUNTS: {
+		MIN: 1,
+		MAX: 5,
+	},
+	PROBABILITIES: {
+		MENU_AVAILABLE: 0.9,
+		TABLE_ACTIVE: 0.9,
+		VISIT_FINISHED: 0.7,
+		VISIT_NOTES: 0.3,
+		ORDER_NOTES: 0.1,
+		ORDER_ITEM_NOTES: 0.1,
+		ORDER_COMPLETED_IF_VISIT_FINISHED: 0.95,
+		HAS_BUFFET_PRICE_PLAN: 0.7,
+	},
+	DATE_RANGES: {
+		VISIT_FROM: '2025-01-01',
+		VISIT_TO: new Date(),
+	},
+	MENU_PRICE_RANGE: {
+		MIN: 10,
+		MAX: 500,
+	},
+	BUFFET_PRICE_RANGE: {
+		MIN: 179,
+		MAX: 2000,
+	},
+	TABLE_CAPACITY_RANGE: {
+		MIN: 2,
+		MAX: 8,
+	},
+	VISIT_DURATION_RANGE: {
+		MIN: 30,
+		MAX: 240,
+	},
+};
+
 const generateUser = (index: number, role: UserRole) => ({
 	email: `${role === UserRole.ADMIN ? 'admin' : 'user'}${index}@example.com`,
-	password:
-		'$argon2id$v=19$m=65536,t=3,p=4$X40vXI3KUvJojm7XmEseag$kQ5EyaFjUV9D7L+dzsWhO/Ldy+eILhTduw1iP3shhqw', // hashed 'password123'
+	password: DEFAULT_PASSWORD_HASH,
 	firstName: faker.person.firstName(),
 	lastName: faker.person.lastName(),
 	role,
@@ -59,9 +129,15 @@ const generateMenu = (restaurantId: string, index: number) => {
 		restaurantId,
 		name: `${faker.food.dish()} ${index + 1}`,
 		description: faker.food.description(),
-		price: faker.number.float({ min: 10, max: 500, fractionDigits: 2 }),
+		price: faker.number.float({
+			min: SEED_CONFIG.MENU_PRICE_RANGE.MIN,
+			max: SEED_CONFIG.MENU_PRICE_RANGE.MAX,
+			fractionDigits: 2,
+		}),
 		category: randomElement(menuCategories),
-		isAvailable: faker.datatype.boolean(0.9),
+		isAvailable: faker.datatype.boolean(
+			SEED_CONFIG.PROBABILITIES.MENU_AVAILABLE,
+		),
 		image: `https://picsum.photos/seed/menu-${index}/400/300`,
 	};
 };
@@ -69,8 +145,11 @@ const generateMenu = (restaurantId: string, index: number) => {
 const generateTable = (restaurantId: string, index: number) => ({
 	restaurantId,
 	name: `Table ${index + 1}`,
-	capacity: randomInt(2, 8),
-	isActive: faker.datatype.boolean(0.9),
+	capacity: randomInt(
+		SEED_CONFIG.TABLE_CAPACITY_RANGE.MIN,
+		SEED_CONFIG.TABLE_CAPACITY_RANGE.MAX,
+	),
+	isActive: faker.datatype.boolean(SEED_CONFIG.PROBABILITIES.TABLE_ACTIVE),
 });
 
 const generatePricePlan = (
@@ -82,7 +161,11 @@ const generatePricePlan = (
 	name: `${isBuffet ? 'Buffet' : 'Plan'} ${index + 1}`,
 	description: faker.lorem.sentence({ min: 10, max: 20 }),
 	price: isBuffet
-		? faker.number.float({ min: 179, max: 2000, fractionDigits: 2 })
+		? faker.number.float({
+				min: SEED_CONFIG.BUFFET_PRICE_RANGE.MIN,
+				max: SEED_CONFIG.BUFFET_PRICE_RANGE.MAX,
+				fractionDigits: 2,
+			})
 		: 0,
 	isActive: true,
 });
@@ -94,8 +177,13 @@ const generateVisit = (
 	fromDate: Date,
 	toDate: Date,
 ) => {
-	const duration = randomInt(30, 240);
-	const isFinished = faker.datatype.boolean(0.7);
+	const duration = randomInt(
+		SEED_CONFIG.VISIT_DURATION_RANGE.MIN,
+		SEED_CONFIG.VISIT_DURATION_RANGE.MAX,
+	);
+	const isFinished = faker.datatype.boolean(
+		SEED_CONFIG.PROBABILITIES.VISIT_FINISHED,
+	);
 	const [visitedAt, departedAt] = faker.date.betweens({
 		from: fromDate,
 		to: toDate,
@@ -111,7 +199,9 @@ const generateVisit = (
 		visitedAt,
 		departedAt: isFinished ? departedAt : null,
 		duration: isFinished ? duration : null,
-		notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
+		notes: faker.datatype.boolean(SEED_CONFIG.PROBABILITIES.VISIT_NOTES)
+			? faker.lorem.sentence()
+			: null,
 	};
 };
 
@@ -123,7 +213,9 @@ interface MenuItem {
 const generateOrder = (restaurantId: string, visit: Visit) => {
 	const status =
 		visit.status === VisitStatus.FINISHED
-			? faker.datatype.boolean(0.95)
+			? faker.datatype.boolean(
+					SEED_CONFIG.PROBABILITIES.ORDER_COMPLETED_IF_VISIT_FINISHED,
+				)
 				? OrderStatus.COMPLETED
 				: OrderStatus.CANCELLED
 			: randomElement([
@@ -137,16 +229,23 @@ const generateOrder = (restaurantId: string, visit: Visit) => {
 		restaurantId,
 		visitId: visit.id,
 		status,
-		note: faker.datatype.boolean(0.1) ? faker.lorem.sentence() : null,
+		note: faker.datatype.boolean(SEED_CONFIG.PROBABILITIES.ORDER_NOTES)
+			? faker.lorem.sentence()
+			: null,
 	};
 };
 
 const generateOrderItem = (order: Order, menu: MenuItem) => ({
 	orderId: order.id,
 	menuId: menu.id,
-	quantity: randomInt(1, 4),
+	quantity: randomInt(
+		SEED_CONFIG.ORDER_ITEM_COUNTS.MIN,
+		SEED_CONFIG.ORDER_ITEM_COUNTS.MAX,
+	),
 	price: menu.price,
-	note: faker.datatype.boolean(0.1) ? faker.lorem.sentence() : null,
+	note: faker.datatype.boolean(SEED_CONFIG.PROBABILITIES.ORDER_ITEM_NOTES)
+		? faker.lorem.sentence()
+		: null,
 });
 
 async function main() {
@@ -170,11 +269,15 @@ async function main() {
 	// Create users (2 admins, 100 regular users)
 	console.log('Creating users...');
 	const admins = await prisma.user.createManyAndReturn({
-		data: Array.from({ length: 2 }, (_, i) => generateUser(i, UserRole.ADMIN)),
+		data: Array.from({ length: SEED_CONFIG.USER_COUNTS.ADMIN }, (_, i) =>
+			generateUser(i, UserRole.ADMIN),
+		),
 	});
 
 	const users = await prisma.user.createManyAndReturn({
-		data: Array.from({ length: 100 }, (_, i) => generateUser(i, UserRole.USER)),
+		data: Array.from({ length: SEED_CONFIG.USER_COUNTS.REGULAR }, (_, i) =>
+			generateUser(i, UserRole.USER),
+		),
 	});
 
 	const allUsers = [...admins, ...users];
@@ -185,7 +288,9 @@ async function main() {
 	// Create restaurants
 	console.log('Creating restaurants...');
 	const restaurants = await prisma.restaurant.createManyAndReturn({
-		data: Array.from({ length: 3 }, (_, i) => generateRestaurant(i)),
+		data: Array.from({ length: SEED_CONFIG.RESTAURANT_COUNT }, (_, i) =>
+			generateRestaurant(i),
+		),
 	});
 	console.log(`Successfully created ${restaurants.length} restaurants`);
 
@@ -193,8 +298,17 @@ async function main() {
 	for (const restaurant of restaurants) {
 		console.log(`Creating data for ${restaurant.name}...`);
 
-		const randomUsers = randomElements(allUsers, randomInt(5, 20));
-		const managerCount = randomInt(1, 2);
+		const randomUsers = randomElements(
+			allUsers,
+			randomInt(
+				SEED_CONFIG.RESTAURANT_USER_COUNTS.MIN,
+				SEED_CONFIG.RESTAURANT_USER_COUNTS.MAX,
+			),
+		);
+		const managerCount = randomInt(
+			SEED_CONFIG.RESTAURANT_USER_COUNTS.MANAGER_MIN,
+			SEED_CONFIG.RESTAURANT_USER_COUNTS.MANAGER_MAX,
+		);
 
 		await prisma.restaurantUser.createMany({
 			data: randomUsers.map((user, index) => ({
@@ -208,19 +322,36 @@ async function main() {
 		});
 
 		const menus = await prisma.menu.createManyAndReturn({
-			data: Array.from({ length: randomInt(20, 100) }, (_, i) =>
-				generateMenu(restaurant.id, i),
+			data: Array.from(
+				{
+					length: randomInt(
+						SEED_CONFIG.MENU_COUNTS.MIN,
+						SEED_CONFIG.MENU_COUNTS.MAX,
+					),
+				},
+				(_, i) => generateMenu(restaurant.id, i),
 			),
 		});
 
 		const tables = await prisma.table.createManyAndReturn({
-			data: Array.from({ length: randomInt(4, 20) }, (_, i) =>
-				generateTable(restaurant.id, i),
+			data: Array.from(
+				{
+					length: randomInt(
+						SEED_CONFIG.TABLE_COUNTS.MIN,
+						SEED_CONFIG.TABLE_COUNTS.MAX,
+					),
+				},
+				(_, i) => generateTable(restaurant.id, i),
 			),
 		});
 
-		const pricePlanCount = randomInt(2, 5);
-		const hasBuffet = faker.datatype.boolean(0.7);
+		const pricePlanCount = randomInt(
+			SEED_CONFIG.PRICE_PLAN_COUNTS.MIN,
+			SEED_CONFIG.PRICE_PLAN_COUNTS.MAX,
+		);
+		const hasBuffet = faker.datatype.boolean(
+			SEED_CONFIG.PROBABILITIES.HAS_BUFFET_PRICE_PLAN,
+		);
 
 		const pricePlans = await prisma.pricePlan.createManyAndReturn({
 			data: Array.from({ length: pricePlanCount }, (_, i) =>
@@ -231,9 +362,12 @@ async function main() {
 
 		for (const table of tables) {
 			const visitTimes = faker.date.betweens({
-				from: '2025-01-01',
-				to: new Date(),
-				count: randomInt(10, 100),
+				from: SEED_CONFIG.DATE_RANGES.VISIT_FROM,
+				to: SEED_CONFIG.DATE_RANGES.VISIT_TO,
+				count: randomInt(
+					SEED_CONFIG.VISIT_COUNTS.MIN,
+					SEED_CONFIG.VISIT_COUNTS.MAX,
+				),
 			});
 
 			const visits = await prisma.visit.createManyAndReturn({
@@ -250,7 +384,10 @@ async function main() {
 
 			const orders = await prisma.order.createManyAndReturn({
 				data: visits.flatMap((visit) => {
-					const orderCount = randomInt(1, 5);
+					const orderCount = randomInt(
+						SEED_CONFIG.ORDER_COUNTS.MIN,
+						SEED_CONFIG.ORDER_COUNTS.MAX,
+					);
 					return Array.from({ length: orderCount }, () =>
 						generateOrder(restaurant.id, visit),
 					);
@@ -259,7 +396,10 @@ async function main() {
 
 			await prisma.orderItem.createMany({
 				data: orders.flatMap((order) => {
-					const itemCount = randomInt(1, 5);
+					const itemCount = randomInt(
+						SEED_CONFIG.ORDER_ITEM_COUNTS.MIN,
+						SEED_CONFIG.ORDER_ITEM_COUNTS.MAX,
+					);
 					const menuPool = randomElements(menus, itemCount);
 					return menuPool.map((menu) => generateOrderItem(order, menu));
 				}),
