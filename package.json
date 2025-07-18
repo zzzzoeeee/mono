@@ -18,8 +18,5 @@
 	"packageManager": "pnpm@10.13.1",
 	"engines": {
 		"node": ">=18"
-	},
-	"dependencies": {
-		"@repo/contracts": "workspace:^"
 	}
 }
